@@ -318,3 +318,23 @@ Owner is starting a fresh session to do the build.
   without needing to know a branch name.
 
 **Step 4: approved.** Build plan stands. Next action is Phase 0.
+
+---
+
+## 2026-08-15 — Session 9 (repo created, handoff complete)
+
+**Done**
+- `shrinivas-sn/verify-claims` created by the owner and pushed to.
+  (The Claude GitHub App cannot create repositories — `create_repository`
+  returns 403 `Resource not accessible by integration`. It is not a grantable
+  permission; repo creation stays manual. Everything after creation works.)
+- Seeded the repo: `README.md`, `LICENSE` (MIT), `.gitignore`, and `docs/`
+  carrying all planning documents plus the two research scripts.
+- Marked this repo's `docs/README.md` as the authoritative copy; the
+  `ghar-khata-software` copy is now a historical snapshot.
+
+**Phase 0 status:** repo created ✔ · npm account + 2FA ✘ · re-verification of the
+two `[secondary]` findings ✘. Those two remain before Phase 1.
+
+**Next:** finish Phase 0, then Phase 1 — `package.json` written by hand, by the
+owner, with each field explained.

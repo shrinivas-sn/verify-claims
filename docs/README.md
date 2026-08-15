@@ -10,8 +10,16 @@ The owner is learning to build and publish production-grade npm packages. The
 first package is **`verify-claims`** — a CLI that runs the check attached to a
 claim in a markdown file and reports which claims have gone false.
 
-**Nothing is built in this repo.** `ghar-khata-software` holds only the planning
-and audit trail. `verify-claims` gets its own new repo.
+**This repo is the home of that package.** It holds the planning and research;
+no package code exists yet. Phase 0 is done — the repo you are reading exists.
+Start at **Phase 1** of `08-build-plan.md`, after the Phase 0 re-verification
+task below.
+
+> **This copy is authoritative.** The same documents also exist in
+> `shrinivas-sn/ghar-khata-software` under `DOCS/npm-package-project/`, where the
+> discovery happened. Treat that copy as a historical snapshot and update this
+> one. Two copies of a document drifting apart is precisely the problem this
+> package exists to catch — noted deliberately rather than pretended away.
 
 ---
 
@@ -57,10 +65,11 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 1 — Clarifying questions | ☑ done |
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
-| 4 — Build plan | ☑ written, awaiting go |
-| 5 — Build | ☐ not started |
+| 4 — Build plan | ☑ approved |
+| 5 — Build | ◐ Phase 0 partly done (repo created) |
 
-**Next action: Phase 0 of `08-build-plan.md`.**
+**Next action:** finish Phase 0 of `08-build-plan.md` — re-verify the two
+`[secondary]` findings against official docs, and turn on npm 2FA. Then Phase 1.
 
 ---
 
