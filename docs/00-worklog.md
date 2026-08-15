@@ -392,3 +392,54 @@ the owner's call in Phase 1).
 per standing constraint 1.
 
 **Next:** owner enables npm 2FA, then Phase 1 with the two corrections applied.
+
+---
+
+## 2026-08-15 — Session 11 (production-readiness review, pre-Phase 1)
+
+Owner asked "is it production ready" and asked for test cases and agents.
+
+**The premise had to be corrected first: there is no code.** The repo is 17 files
+and all of them are documents. Nothing can be production ready. What *can* be
+reviewed is whether the plan will produce something that is — so the review was
+aimed at the plan and at the design decisions Phases 2–4 will force.
+
+**Method.** Four parallel agents, one per axis. Three hit the account's session /
+weekly limit and were reported as failed — but all three had already written
+their deliverables to disk before dying, so all four landed. Verified each for
+truncation rather than trusting the status.
+
+**Done — four new documents**
+- `10-test-cases-parser.md` — ~130 cases for `parseClaims`, plus a 10-row table
+  of format decisions to settle before writing any parser code.
+- `11-test-cases-executor.md` — execution cases, exit-code semantics, and a
+  threat model for a tool that runs shell commands out of markdown.
+- `12-production-readiness.md` — gap analysis of the 10 phases against what
+  production grade actually requires.
+- `13-real-world-corpus.md` — real claims mined from `ghar-khata-software`, the
+  fraction v1 can actually verify, and a recommended fixture set.
+
+**Two findings that change the plan rather than decorate it**
+1. **The annotation format has no extension point.** Everything after `claim:` is
+   the command, so there is nowhere for an option to go. Phase 3 already defers
+   the output-matching decision, which makes a future option likely. Reserve the
+   options field and `<!-- /claim -->` now — it is a format break otherwise, and
+   the format is the one thing that is expensive to change after publishing.
+2. **The dominant failure mode is silent non-recognition.** A dozen catalogued
+   near-misses produce no claim and a green exit code. For a tool whose purpose is
+   to say "this document is lying to you", silence-plus-green is the worst
+   possible output. `parseClaims` should return `{ claims, problems }`.
+
+**A `[secondary]` tag closed as a side effect.** The packaging review tagged npm's
+72-hour unpublish window `[unverified]`, on the grounds that `docs.npmjs.com` is
+blocked. It is — but its source repo clones fine, which Session 10 had already
+established. Verified and retagged `[primary]`. Recording it because the failure
+was inherited: a limitation was carried forward from a previous session instead of
+being re-tested. That is the same class of error as a stale claim in a document.
+
+**Not done, deliberately:** still no code, no `package.json`, no test files. The
+agents produced *specifications* to implement from, per standing constraint 1.
+A test suite handed over ready-made would defeat the point of the project.
+
+**Next:** owner settles the format decision table in `10-test-cases-parser.md`
+§15, enables npm 2FA, then Phase 1.

@@ -38,6 +38,10 @@ of the Phase 1 `package.json`.
 | `07-decision.md` | **What we're building and why** |
 | `08-build-plan.md` | **The 10 phases to follow** |
 | `09-phase-0-verification.md` | **Phase 0 fact-check.** One finding was wrong — read before Phase 1 |
+| `10-test-cases-parser.md` | Test cases for `parseClaims` + **the format decisions to settle first** |
+| `11-test-cases-executor.md` | Execution test cases, exit-code semantics, threat model |
+| `12-production-readiness.md` | What "production grade" needs that the 10 phases miss |
+| `13-real-world-corpus.md` | Real claims mined from `ghar-khata-software`; what v1 can actually cover |
 | `tools/` | Scripts that measure npm niche crowdedness and staleness |
 
 Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
@@ -70,9 +74,13 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 4 — Build plan | ☑ approved |
 | 5 — Build | ◐ Phase 0 done bar npm 2FA (owner-only) |
 
-**Next action:** turn on npm 2FA (owner-only; now mandatory to publish at all),
-then Phase 1 of `08-build-plan.md` — `package.json` by hand, with the two
-corrections from `09-phase-0-verification.md` applied.
+**Next action:** three things, in this order.
+1. Settle the **format decision table** — `10-test-cases-parser.md` §15. Ten
+   questions; the format is the only thing that is expensive to change after
+   publishing, so it is decided before code, not during it.
+2. Turn on **npm 2FA** (owner-only; now mandatory to publish at all).
+3. **Phase 1** of `08-build-plan.md` — `package.json` by hand, with the two
+   corrections from `09-phase-0-verification.md` applied.
 
 ---
 
