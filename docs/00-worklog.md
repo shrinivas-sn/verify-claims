@@ -40,8 +40,8 @@ be rushed into, because a package nobody needs teaches nothing about users.
 | 1 | Clarifying questions answered, scope unambiguous | ☑ | 2026-08-15 |
 | 2 | Research (packaging landscape + problem sourcing) | ☑ | 2026-08-15 |
 | 3 | Synthesis (scope, options, risks, v1 cut) | ☑ | 2026-08-15 |
-| 4 | Plan written | ◐ | awaiting approval |
-| 5 | Build | ☐ | — |
+| 4 | Plan written | ☑ | 2026-08-15 (Session 8) |
+| 5 | Build | ◐ | Phase 0 done bar npm 2FA (Session 10) |
 
 Rule: no step starts before the previous one is explicitly approved by the owner.
 
@@ -338,3 +338,125 @@ two `[secondary]` findings ✘. Those two remain before Phase 1.
 
 **Next:** finish Phase 0, then Phase 1 — `package.json` written by hand, by the
 owner, with each field explained.
+
+---
+
+## 2026-08-15 — Session 10 (Phase 0 re-verification)
+
+Continued from the handoff. Task: the two `[secondary]` findings.
+
+**Access changed since Step 2.** `nodejs.org` is now reachable. `docs.npmjs.com`
+is still blocked — but it is generated from the public `npm/documentation` repo,
+which clones fine, so the primary source was obtainable anyway (commit
+`26eacbbb`, 2026-08-13). Recorded because "the proxy blocked it" was accepted
+once already and turned out to be only half true.
+
+**Done**
+- `09-phase-0-verification.md` — the full record, with sources.
+- Corrected `02-research-craft.md` in place, corrections visible (struck-through
+  text plus dated notes) rather than silently rewritten.
+- Updated `08-build-plan.md` (Phase 0 closed, Phase 1 and Phase 8 amended).
+- Added `.nvmrc` → `24`.
+
+**Finding 1 (npm classic tokens) — CONFIRMED.** npm's docs: *"As of November
+2025, only Granular access tokens are supported. Legacy access tokens have been
+removed."* Our date (2025-12-09) was a month off; the substance was right.
+
+**Finding 2 (`require(esm)` stable on 22.12+) — WRONG.** Unflagged at 22.12.0,
+stops warning at 22.13.0, but Node 22's docs still carry `Stability: 1.2 -
+Release candidate` today and always will. The stable marker landed in **24.15.0**
+and **25.4.0** and was never backported to the 22 line.
+
+**Does the approach change? No — the conclusion outlived its evidence.** ESM-only
+is still right; every non-EOL Node can `require()` an ESM package unflagged. But
+the `>=22.12` floor was justified by a false premise and is being moved to
+`>=22.13.0` (recommendation; `>=24.15.0` is the conservative alternative and is
+the owner's call in Phase 1).
+
+**Four things the research had no way to know**, all from the primary source:
+1. Trusted publishing needs **npm ≥ 11.5.1 / Node ≥ 22.14.0** — and Node 22
+   bundles npm 10.9.8, so **CI must run Node 24+**.
+2. **`repository.url` must exactly match the GitHub repo** or the publish is
+   rejected. The Phase 1 `package.json` sketch omitted the field entirely; that
+   would have failed at Phase 8, eight phases after the mistake.
+3. **Staged publishing** (`npm stage publish` + 2FA approval) now exists.
+4. 2FA is **mandatory** to publish, not merely recommended.
+
+**Worth noting on its own:** Node 25 — one of the two lines that marked
+`require(esm)` stable — is itself already EOL (2026-06-01).
+
+**Phase 0 status:** re-verification ✔ · repo ✔ · `.nvmrc` ✔ · npm 2FA ✘
+**(owner-only — cannot be done from a session; it is the one thing left).**
+
+**Not done, deliberately:** no `package.json`. Phase 1 is the owner's to type,
+per standing constraint 1.
+
+**Next:** owner enables npm 2FA, then Phase 1 with the two corrections applied.
+
+---
+
+## 2026-08-15 — Session 11 (production-readiness review, pre-Phase 1)
+
+Owner asked "is it production ready" and asked for test cases and agents.
+
+**The premise had to be corrected first: there is no code.** The repo is 17 files
+and all of them are documents. Nothing can be production ready. What *can* be
+reviewed is whether the plan will produce something that is — so the review was
+aimed at the plan and at the design decisions Phases 2–4 will force.
+
+**Method.** Four parallel agents, one per axis. Three hit the account's session /
+weekly limit and were reported as failed — but all three had already written
+their deliverables to disk before dying, so all four landed. Verified each for
+truncation rather than trusting the status.
+
+**Done — four new documents**
+- `10-test-cases-parser.md` — ~130 cases for `parseClaims`, plus a 10-row table
+  of format decisions to settle before writing any parser code.
+- `11-test-cases-executor.md` — execution cases, exit-code semantics, and a
+  threat model for a tool that runs shell commands out of markdown.
+- `12-production-readiness.md` — gap analysis of the 10 phases against what
+  production grade actually requires.
+- `13-real-world-corpus.md` — real claims mined from `ghar-khata-software`, the
+  fraction v1 can actually verify, and a recommended fixture set.
+
+**Two findings that change the plan rather than decorate it**
+1. **The annotation format has no extension point.** Everything after `claim:` is
+   the command, so there is nowhere for an option to go. Phase 3 already defers
+   the output-matching decision, which makes a future option likely. Reserve the
+   options field and `<!-- /claim -->` now — it is a format break otherwise, and
+   the format is the one thing that is expensive to change after publishing.
+2. **The dominant failure mode is silent non-recognition.** A dozen catalogued
+   near-misses produce no claim and a green exit code. For a tool whose purpose is
+   to say "this document is lying to you", silence-plus-green is the worst
+   possible output. `parseClaims` should return `{ claims, problems }`.
+
+**A `[secondary]` tag closed as a side effect.** The packaging review tagged npm's
+72-hour unpublish window `[unverified]`, on the grounds that `docs.npmjs.com` is
+blocked. It is — but its source repo clones fine, which Session 10 had already
+established. Verified and retagged `[primary]`. Recording it because the failure
+was inherited: a limitation was carried forward from a previous session instead of
+being re-tested. That is the same class of error as a stale claim in a document.
+
+**Not done, deliberately:** still no code, no `package.json`, no test files. The
+agents produced *specifications* to implement from, per standing constraint 1.
+A test suite handed over ready-made would defeat the point of the project.
+
+**Next:** owner settles the format decision table in `10-test-cases-parser.md`
+§15, enables npm 2FA, then Phase 1.
+
+**Follow-up in the same session.** Owner asked for a plain-terms summary and then
+for the docs to be brought up to date. Two observations drove what followed: the
+ten format decisions — now the gating item for the whole build — were buried in
+§15 of a 998-line technical catalogue, and the entry-point README still pointed a
+cold start at `07-decision.md`.
+
+- Added `14-next-steps.md`: the three actions in order, and the ten decisions
+  restated in plain language with a recommended answer each, so they can be
+  approved in one go or overridden individually.
+- Pointed `README.md` at it — top banner, index row, fastest-useful-path, and the
+  next-action block.
+- Wired the gate into `08-build-plan.md` Phase 2 itself, rather than leaving it in
+  a separate review document. A gate recorded only in the document that discovered
+  it is a gate the next session skips. Phase 2's ships-when now also points at the
+  fixtures already selected in `13-real-world-corpus.md`.
+- Corrected the Phase 2 signature in the plan to `{ claims, problems }`.
