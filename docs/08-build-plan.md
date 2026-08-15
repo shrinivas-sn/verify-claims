@@ -10,16 +10,23 @@ is "mostly done".
 
 ## Phase 0 — Prep (before any code)
 
-1. **Re-verify the `[secondary]` research.** Step 2 could not reach official docs
-   (proxy blocked). Confirm on `docs.npmjs.com` and `nodejs.org`:
-   - npm classic tokens are gone; trusted publishing is the current path
-   - `require(esm)` is stable on Node 22.12+
-   If either is wrong, the approach changes — so this is first, not later.
-2. npm account + **2FA on**.
-3. New GitHub repo: `verify-claims`. Public. MIT.
-4. Node 24 locally (`.nvmrc`).
+1. ☑ **Re-verify the `[secondary]` research.** Done 2026-08-15 →
+   `09-phase-0-verification.md`.
+   - npm classic tokens are gone; trusted publishing is the current path —
+     **confirmed** (date corrected: November 2025, not 2025-12-09).
+   - `require(esm)` is stable on Node 22.12+ — **wrong as written.** Unflagged at
+     22.12, quiet at 22.13, but *never* marked stable on the Node 22 line; that
+     happened in 24.15.0 and 25.4.0 only. **The approach does not change** —
+     ESM-only is still viable — but the `engines` floor in Phase 1 does.
+2. ☐ npm account + **2FA on**. *Owner-only — cannot be done from a session.*
+   Now mandatory rather than good practice: npm requires 2FA (or a bypass-2FA
+   granular token) to publish any package.
+3. ☑ New GitHub repo: `verify-claims`. Public. MIT.
+4. ☑ Node 24 locally (`.nvmrc` → `24`). Also required in CI at Phase 8: trusted
+   publishing needs npm ≥ 11.5.1, and Node 22 still bundles npm 10.9.8.
 
 *Why first: everything downstream assumes these. Cheap now, expensive later.*
+*Vindicated — one of the two was wrong.*
 
 ---
 
@@ -31,18 +38,36 @@ is "mostly done".
 {
   "name": "@shrinivas-sn/verify-claims",
   "version": "0.1.0",
-  "type": "module",                 // ESM-only
-  "engines": { "node": ">=22.12" }, // floor with stable require(esm)
-  "files": ["dist"],                // what actually ships
+  "type": "module",                  // ESM-only
+  "engines": { "node": ">=22.13.0" },// first release where require(esm) is quiet
+  "files": ["dist"],                 // what actually ships
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }
   },
-  "bin": { "verify-claims": "./dist/cli.js" }
+  "bin": { "verify-claims": "./dist/cli.js" },
+  "repository": {                    // must match the repo exactly — see below
+    "type": "git",
+    "url": "git+https://github.com/shrinivas-sn/verify-claims.git"
+  }
 }
 ```
 
 **Learn here:** `exports` (types first — order matters, first match wins),
 `files` vs `.gitignore`, why `main` is legacy, what `bin` does.
+
+**Two changes from Phase 0's verification — read the reasons, don't just copy:**
+
+- **`engines` was `>=22.12`, with the reason "floor with stable `require(esm)`".**
+  That reason was false. 22.12 unflags the feature but still prints an
+  `ExperimentalWarning` to a CommonJS consumer's stderr; **22.13.0** is the first
+  quiet release. It is *never* marked stable on the Node 22 line — that is
+  24.15.0 and 25.4.0. `>=24.15.0` is the defensible alternative if you would
+  rather not ship against a release-candidate feature at all; it costs you Node
+  22 LTS, which is supported until 2027-04-30. **This one is your call.**
+- **`repository` was missing entirely, and it is not optional.** npm rejects a
+  trusted-publishing publish whose `repository.url` does not exactly match the
+  GitHub repository. Omitting it means Phase 8 fails at the last step, for a
+  reason the error message will not make obvious.
 
 Then `tsconfig.json` (`"module": "nodenext"`), and `tsc` as the only build step.
 
@@ -129,6 +154,25 @@ each time.
 ## Phase 8 — Publish
 
 GitHub Actions + **OIDC trusted publishing**. No `NPM_TOKEN` secret anywhere.
+
+Verified requirements (2026-08-15, `09-phase-0-verification.md`) — get these
+wrong and the failure arrives at the last possible moment:
+
+- `permissions: id-token: write` in the workflow. Without it there is no OIDC token.
+- **Node 24+ in CI.** Trusted publishing needs npm ≥ 11.5.1; Node 22 bundles 10.9.8.
+- `repository.url` in `package.json` matching the repo exactly (Phase 1).
+- Register the trusted publisher on npmjs.com *before* the first publish, with
+  the **workflow filename** exactly right — npm does not validate the config when
+  you save it, only when you publish.
+- Since 2026-05-20 you must also pick the **allowed actions** (`npm publish`,
+  `npm stage publish`, or both).
+- **Do not add `--provenance`.** Provenance is automatic under trusted publishing
+  from a public repo. Tutorials that add the flag predate this.
+
+Optional, and worth understanding even if you skip it: **staged publishing** —
+CI runs `npm stage publish`, then you approve with 2FA before the version goes
+public. Combined with "require 2FA and disallow tokens", it is npm's strongest
+recommended posture.
 
 **Ships when:** `npm i @shrinivas-sn/verify-claims` works in a fresh project,
 types resolve, and provenance shows on the npm page.

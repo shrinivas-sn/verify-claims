@@ -11,9 +11,10 @@ first package is **`verify-claims`** — a CLI that runs the check attached to a
 claim in a markdown file and reports which claims have gone false.
 
 **This repo is the home of that package.** It holds the planning and research;
-no package code exists yet. Phase 0 is done — the repo you are reading exists.
-Start at **Phase 1** of `08-build-plan.md`, after the Phase 0 re-verification
-task below.
+no package code exists yet. Phase 0 is complete **except for npm 2FA, which only
+the owner can do**. Start at **Phase 1** of `08-build-plan.md` — but read the
+correction in `09-phase-0-verification.md` first, because it changes two fields
+of the Phase 1 `package.json`.
 
 > **This copy is authoritative.** The same documents also exist in
 > `shrinivas-sn/ghar-khata-software` under `DOCS/npm-package-project/`, where the
@@ -36,6 +37,7 @@ task below.
 | `05-synthesis.md` | Scope + technical approach *(its candidate choice is superseded)* |
 | `07-decision.md` | **What we're building and why** |
 | `08-build-plan.md` | **The 10 phases to follow** |
+| `09-phase-0-verification.md` | **Phase 0 fact-check.** One finding was wrong — read before Phase 1 |
 | `tools/` | Scripts that measure npm niche crowdedness and staleness |
 
 Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
@@ -66,21 +68,24 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0 partly done (repo created) |
+| 5 — Build | ◐ Phase 0 done bar npm 2FA (owner-only) |
 
-**Next action:** finish Phase 0 of `08-build-plan.md` — re-verify the two
-`[secondary]` findings against official docs, and turn on npm 2FA. Then Phase 1.
+**Next action:** turn on npm 2FA (owner-only; now mandatory to publish at all),
+then Phase 1 of `08-build-plan.md` — `package.json` by hand, with the two
+corrections from `09-phase-0-verification.md` applied.
 
 ---
 
 ## Two things the next session must not skip
 
-**1. Phase 0 exists for a reason.** Two findings the whole approach rests on —
-that npm classic tokens are gone, and that `require(esm)` is stable on Node
-22.12+ — came from web-search summaries, because this environment's proxy blocked
-`docs.npmjs.com` and `nodejs.org`. They are tagged `[secondary]` throughout.
-**Re-verify both against official docs before building on them.** If either is
-wrong, the technical approach changes.
+**1. Phase 0 existed for a reason — and it paid.** Two findings the whole
+approach rests on came from web-search summaries because the proxy blocked the
+official docs. Checked on 2026-08-15: npm classic tokens really are gone
+(confirmed), but **`require(esm)` is *not* stable on Node 22.12+ — that claim was
+false.** It is unflagged there, and only formally stable from 24.15.0. ESM-only
+survives; the `engines` floor and a missing `repository` field did not. Full
+record in `09-phase-0-verification.md`. The lesson is the one the package is
+about: a written-down claim went stale and nobody would have noticed.
 
 **2. The honest state of the case.** The evidence is strong that this problem is
 real *for the owner* — it happened twice in this repo, and they had already

@@ -9,15 +9,29 @@ checked against the registry directly, it was — those are marked **[primary]**
 Claims resting only on web-search summaries are marked **[secondary]** and should
 be re-verified against official docs before we depend on them.
 
+> **Re-verified 2026-08-15 (Session 10).** Findings 1 and 4 have been checked
+> against primary sources; corrections are inline below and the full record is in
+> `09-phase-0-verification.md`. Finding 1 was **wrong** and is struck through
+> where wrong. Findings 3's `[secondary]` half is still unverified.
+
 ---
 
 ## Finding 1 — ESM-only is now viable. This is the big one.
 
-`require(esm)` — CommonJS code being able to `require()` an ES module — is
+~~`require(esm)` — CommonJS code being able to `require()` an ES module — is
 **stable and unflagged across every supported Node LTS line** (20.19+, 22.12+,
-stable marker added in 25.4.0 and backported to 24.15.0). **[secondary]**
+stable marker added in 25.4.0 and backported to 24.15.0).~~ **[secondary]**
 
-Node support status as of now **[secondary]**:
+> **CORRECTED 2026-08-15 — this was wrong.** *Unflagged* on every supported line
+> is right; ***stable* is not.** `require(esm)` is unflagged from 22.12.0 and
+> stops warning at 22.13.0, but Node 22's own docs still mark it
+> **`Stability: 1.2 - Release candidate`** today (v22.23.2) and always will — the
+> promotion to stable landed only in **24.15.0** and **25.4.0**, and was never
+> backported to the 22 line. The conclusion below (ESM-only is viable) survives
+> unchanged; the **`>=22.12` floor does not** — see `09-phase-0-verification.md`.
+
+Node support status as of now **[primary — verified 2026-08-15 against
+`nodejs.org/en/about/previous-releases` and `nodejs/Release`'s `schedule.json`]**:
 
 | Line | Status | EOL |
 |---|---|---|
@@ -35,8 +49,14 @@ bugs — is **largely obsolete for a new package**. Most of the tutorials on thi
 are 2022–2024 material solving a problem that has since been fixed upstream.
 
 **This materially simplifies what you have to learn.** A new package in 2026 can
-be ESM-only with `"engines": { "node": ">=22.12" }` and simply not have the
+be ESM-only with `"engines": { "node": ">=22.13" }` and simply not have the
 problem. I'd been prepared to teach dual publishing; the research says don't.
+
+> **Floor corrected 2026-08-15:** was `>=22.12`. On exactly 22.12 a CommonJS
+> consumer sees an `ExperimentalWarning`; 22.13.0 is the first release that is
+> quiet. Alternative floor `>=24.15.0` (where the feature is formally stable)
+> considered and not recommended — it would drop Node 22 LTS, supported until
+> 2027-04-30, to gain a paperwork guarantee rather than a behavioural one.
 
 *Caveat:* ESM-only still hurts consumers stuck on dead Node or on bundlers that
 mis-resolve. For a package whose first user is you, that risk is near zero.
@@ -94,8 +114,13 @@ type resolution for consumers while working fine locally.
 
 ## Finding 4 — Publishing security changed hard, and old tutorials are dangerous
 
-**npm permanently deprecated and revoked all classic tokens on 2025-12-09.**
-**[secondary — verify before relying]**
+**npm permanently deprecated and revoked all classic tokens.**
+**[primary — verified 2026-08-15 against the `npm/documentation` source]**
+
+> **Date corrected 2026-08-15:** the research said **2025-12-09**. npm's own docs
+> say ***November 2025***: *"As of November 2025, only Granular access tokens are
+> supported. Legacy access tokens have been removed."* The substance — removed,
+> not merely deprecated — is confirmed; only the date was wrong.
 
 The replacement is **OIDC trusted publishing**: you register a specific GitHub
 Actions (or GitLab CI) workflow as a trusted publisher for the package, and CI
@@ -111,7 +136,21 @@ This followed the self-replicating npm supply-chain worms of 2025–2026.
   date and teaches an insecure habit**. Skip those.
 - We should publish from CI via trusted publishing from the very first release —
   it is *easier* than tokens, not harder, and it is free.
-- 2FA on the npm account, on from day one.
+- 2FA on the npm account, on from day one. **Verified 2026-08-15: this is now
+  mandatory, not advice** — all packages require 2FA (or a bypass-2FA granular
+  token) to publish at all.
+
+**Added 2026-08-15 from the primary source** — constraints the search summaries
+did not surface, all of which land in Phase 1 or Phase 8:
+- Trusted publishing requires **npm ≥ 11.5.1 and Node ≥ 22.14.0**. Node 22 bundles
+  npm 10.9.8, which is too old — so **CI must run Node 24+** (24.19.0 bundles
+  11.17.0).
+- **`repository.url` must exactly match the GitHub repo** or the publish fails.
+- Cloud-hosted runners only; self-hosted is unsupported.
+- Provenance is automatic *only* for a public package from a **public** repo, and
+  not at all on CircleCI.
+- **Staged publishing** (`npm stage publish` → maintainer approves with 2FA) now
+  exists and is npm's strongest recommended posture. Optional for us.
 
 ---
 

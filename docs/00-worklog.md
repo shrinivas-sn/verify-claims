@@ -40,8 +40,8 @@ be rushed into, because a package nobody needs teaches nothing about users.
 | 1 | Clarifying questions answered, scope unambiguous | ☑ | 2026-08-15 |
 | 2 | Research (packaging landscape + problem sourcing) | ☑ | 2026-08-15 |
 | 3 | Synthesis (scope, options, risks, v1 cut) | ☑ | 2026-08-15 |
-| 4 | Plan written | ◐ | awaiting approval |
-| 5 | Build | ☐ | — |
+| 4 | Plan written | ☑ | 2026-08-15 (Session 8) |
+| 5 | Build | ◐ | Phase 0 done bar npm 2FA (Session 10) |
 
 Rule: no step starts before the previous one is explicitly approved by the owner.
 
@@ -338,3 +338,57 @@ two `[secondary]` findings ✘. Those two remain before Phase 1.
 
 **Next:** finish Phase 0, then Phase 1 — `package.json` written by hand, by the
 owner, with each field explained.
+
+---
+
+## 2026-08-15 — Session 10 (Phase 0 re-verification)
+
+Continued from the handoff. Task: the two `[secondary]` findings.
+
+**Access changed since Step 2.** `nodejs.org` is now reachable. `docs.npmjs.com`
+is still blocked — but it is generated from the public `npm/documentation` repo,
+which clones fine, so the primary source was obtainable anyway (commit
+`26eacbbb`, 2026-08-13). Recorded because "the proxy blocked it" was accepted
+once already and turned out to be only half true.
+
+**Done**
+- `09-phase-0-verification.md` — the full record, with sources.
+- Corrected `02-research-craft.md` in place, corrections visible (struck-through
+  text plus dated notes) rather than silently rewritten.
+- Updated `08-build-plan.md` (Phase 0 closed, Phase 1 and Phase 8 amended).
+- Added `.nvmrc` → `24`.
+
+**Finding 1 (npm classic tokens) — CONFIRMED.** npm's docs: *"As of November
+2025, only Granular access tokens are supported. Legacy access tokens have been
+removed."* Our date (2025-12-09) was a month off; the substance was right.
+
+**Finding 2 (`require(esm)` stable on 22.12+) — WRONG.** Unflagged at 22.12.0,
+stops warning at 22.13.0, but Node 22's docs still carry `Stability: 1.2 -
+Release candidate` today and always will. The stable marker landed in **24.15.0**
+and **25.4.0** and was never backported to the 22 line.
+
+**Does the approach change? No — the conclusion outlived its evidence.** ESM-only
+is still right; every non-EOL Node can `require()` an ESM package unflagged. But
+the `>=22.12` floor was justified by a false premise and is being moved to
+`>=22.13.0` (recommendation; `>=24.15.0` is the conservative alternative and is
+the owner's call in Phase 1).
+
+**Four things the research had no way to know**, all from the primary source:
+1. Trusted publishing needs **npm ≥ 11.5.1 / Node ≥ 22.14.0** — and Node 22
+   bundles npm 10.9.8, so **CI must run Node 24+**.
+2. **`repository.url` must exactly match the GitHub repo** or the publish is
+   rejected. The Phase 1 `package.json` sketch omitted the field entirely; that
+   would have failed at Phase 8, eight phases after the mistake.
+3. **Staged publishing** (`npm stage publish` + 2FA approval) now exists.
+4. 2FA is **mandatory** to publish, not merely recommended.
+
+**Worth noting on its own:** Node 25 — one of the two lines that marked
+`require(esm)` stable — is itself already EOL (2026-06-01).
+
+**Phase 0 status:** re-verification ✔ · repo ✔ · `.nvmrc` ✔ · npm 2FA ✘
+**(owner-only — cannot be done from a session; it is the one thing left).**
+
+**Not done, deliberately:** no `package.json`. Phase 1 is the owner's to type,
+per standing constraint 1.
+
+**Next:** owner enables npm 2FA, then Phase 1 with the two corrections applied.
