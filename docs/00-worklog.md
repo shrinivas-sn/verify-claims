@@ -443,3 +443,20 @@ A test suite handed over ready-made would defeat the point of the project.
 
 **Next:** owner settles the format decision table in `10-test-cases-parser.md`
 §15, enables npm 2FA, then Phase 1.
+
+**Follow-up in the same session.** Owner asked for a plain-terms summary and then
+for the docs to be brought up to date. Two observations drove what followed: the
+ten format decisions — now the gating item for the whole build — were buried in
+§15 of a 998-line technical catalogue, and the entry-point README still pointed a
+cold start at `07-decision.md`.
+
+- Added `14-next-steps.md`: the three actions in order, and the ten decisions
+  restated in plain language with a recommended answer each, so they can be
+  approved in one go or overridden individually.
+- Pointed `README.md` at it — top banner, index row, fastest-useful-path, and the
+  next-action block.
+- Wired the gate into `08-build-plan.md` Phase 2 itself, rather than leaving it in
+  a separate review document. A gate recorded only in the document that discovered
+  it is a gate the next session skips. Phase 2's ships-when now also points at the
+  fixtures already selected in `13-real-world-corpus.md`.
+- Corrected the Phase 2 signature in the plan to `{ claims, problems }`.

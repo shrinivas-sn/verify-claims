@@ -94,9 +94,23 @@ Lint: **0 errors**
 Chosen because an HTML comment renders as nothing on GitHub, so docs stay
 readable to people who don't have the tool.
 
+> **Gate added 2026-08-15 (Session 11): the format is decided before this phase
+> starts, not during it.** The review in `10-test-cases-parser.md` found the
+> format under-specified in ten places — where the claim text ends, what happens
+> to a command containing `-->`, whether a tag in a table counts. Answer the ten
+> questions in `14-next-steps.md` first. Two of them change the format itself:
+> **reserve an options slot and `<!-- /claim -->` now**, or accept a breaking
+> change later. `~130` test cases are waiting in `10-test-cases-parser.md`.
+>
+> One correction to the signature, for the same document's reason: **return
+> `{ claims, problems }`, not a bare array.** A dozen ways of mistyping a tag
+> currently yield no claims, a green exit code, and no complaint — the worst
+> possible outcome for a tool that exists to say a document is lying.
+
 **Learn here:** designing a public API, naming, what to export vs keep private.
 
-**Ships when:** tested against real files from `ghar-khata-software/DOCS`.
+**Ships when:** tested against real files from `ghar-khata-software/DOCS` —
+candidate fixtures are already picked out in `13-real-world-corpus.md`.
 
 ---
 
