@@ -676,3 +676,46 @@ owner reviews/approves) rather than the original "owner types it" mechanism.
 next steps if the owner wants them: annotate more real docs, watch whether
 claims keep getting added over time (the actual fail-condition test), or
 start a genuinely new package/idea using what got learned here.
+
+---
+
+## 2026-08-18 — Session 20 (found and fixed a bug in Phase 0's own verification)
+
+**Owner asked to check an old open PR** (`#1`, "Close Phase 0: re-verify the
+`[secondary]` findings", from a separate session, 2026-08-15) to see if it
+was still needed before closing it.
+
+**It was not stale — it was a correct, unmerged correction to Session 10's
+work.** That PR had independently re-verified the same two Phase 0 findings
+and reached a different conclusion on one of them: `require(esm)` is **not**
+"Stable" on Node 22.x. Checked this myself directly (`nodejs.org/docs/latest-v22.x/api/modules.html`,
+not the `/api/` "latest" page) to confirm before acting on it: the page
+shows **"Stability: 1.2 - Release candidate"** for "Loading ECMAScript
+modules using require()," on Node 22.23.2 — the newest 22.x patch as of
+today. Session 10's "confirmed" verdict checked Node's *latest* docs page
+(v26 at the time), which reflects the current release line's status, not
+what was true for the actual `engines: >=22.12` floor already shipped in
+the published package. That was the bug: verifying a claim against the
+wrong version of the source.
+
+**Fixed for real, not just noted:**
+- `package.json` `engines.node`: `>=22.12` → `>=22.13` (the unflagged
+  minimum on the 22.x line — full "Stable" only exists on 24.15.0+/25.4.0+,
+  which the owner chose not to require, trading a wider compatible floor
+  against dropping the release-candidate caveat entirely — asked the owner
+  directly which floor they wanted before changing anything already
+  published).
+- `02-research-craft.md` Finding 1: struck through and corrected in place,
+  same convention the other PR used, not silently rewritten.
+- `08-build-plan.md` Phase 1 snippet and `README.md`'s "must not skip"
+  section corrected to match.
+- New changeset, rebuilt, retested (typecheck/lint/test/packcheck all
+  green), ready for the automated release pipeline to publish as a patch.
+
+**Still open:** the other PR (`#1`) also carries 5 unmerged docs files
+(test-case catalogs, a production-readiness checklist, a real-world corpus,
+next-steps) never reviewed. Not evaluated yet — separate decision from this
+fix, deferred to the owner.
+
+**Status:** engines-floor bug fixed and committed, changeset pending. PR
+`#1` not yet closed — still has unreviewed value (the docs files above).

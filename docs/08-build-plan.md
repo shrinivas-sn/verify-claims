@@ -30,7 +30,7 @@ is "mostly done".
   "name": "@shrinivas-sn/verify-claims",
   "version": "0.1.0",
   "type": "module",                 // ESM-only
-  "engines": { "node": ">=22.12" }, // floor with stable require(esm)
+  "engines": { "node": ">=22.13" }, // unflagged require(esm); corrected 2026-08-18, was 22.12
   "files": ["dist"],                // what actually ships
   "exports": {
     ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" }

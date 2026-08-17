@@ -77,13 +77,19 @@ look like.
 
 ## Two things the next session must not skip
 
-**1. Phase 0 is done — re-verified 2026-08-18.** Two findings the whole approach
-rests on — that npm classic tokens are gone, and that `require(esm)` is stable —
-originally came from web-search summaries because this environment's proxy
-blocked `docs.npmjs.com` and `nodejs.org`. Both were re-checked directly against
-official docs and confirmed (see `00-worklog.md` Session 10 for the one date
-correction found). They remain tagged `[secondary]` in the older research docs
-for the historical record, but are no longer open questions.
+**1. Phase 0's re-verification had its own bug, since fixed.** Session 10
+(2026-08-18) checked npm classic tokens (confirmed, date corrected) and
+`require(esm)` stability — but checked Node's *latest* docs page, which
+shows the current release line, not what was true on the actual `engines`
+floor being shipped. A second pass (Session 20, prompted by a stray open PR
+from a separate session that had done this correctly) checked the
+version-pinned Node 22.x docs and found `require(esm)` is **"1.2 - Release
+candidate" on Node 22.x, not "2 - Stable"** — the stable marker is
+24.15.0+/25.4.0+ only. The `engines` floor was `>=22.12`; corrected to
+`>=22.13` (unflagged minimum) and shipped as a patch release. See
+`00-worklog.md` Sessions 10 and 20, and `02-research-craft.md` Finding 1
+for the full correction. Lesson: "checked the docs" still needs "checked
+the docs for the specific version being depended on."
 
 **2. The honest state of the case.** The evidence is strong that this problem is
 real *for the owner* — it happened twice in this repo, and they had already

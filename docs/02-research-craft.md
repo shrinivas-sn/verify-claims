@@ -13,9 +13,18 @@ be re-verified against official docs before we depend on them.
 
 ## Finding 1 — ESM-only is now viable. This is the big one.
 
-`require(esm)` — CommonJS code being able to `require()` an ES module — is
+~~`require(esm)` — CommonJS code being able to `require()` an ES module — is
 **stable and unflagged across every supported Node LTS line** (20.19+, 22.12+,
-stable marker added in 25.4.0 and backported to 24.15.0). **[secondary]**
+stable marker added in 25.4.0 and backported to 24.15.0). **[secondary]**~~
+**[corrected 2026-08-18]** False as stated. Checked the version-pinned Node
+22.x docs directly (not the "latest" docs page, which reflects only the
+current release line): `require(esm)` is marked **Stability: 1.2 - Release
+candidate** on Node 22.x, including the newest 22.23.2 patch — never
+"2 - Stable" on that line. The stable marker only landed in 24.15.0/25.4.0,
+as the second half of this claim already said. Unflagged (no warning, no
+CLI flag needed) from 22.12.0 on, "quiet" from 22.13.0 — but "unflagged"
+and "Stable" are different things. ESM-only as an approach still holds; the
+`engines` floor claim below did not.
 
 Node support status as of now **[secondary]**:
 
@@ -35,8 +44,9 @@ bugs — is **largely obsolete for a new package**. Most of the tutorials on thi
 are 2022–2024 material solving a problem that has since been fixed upstream.
 
 **This materially simplifies what you have to learn.** A new package in 2026 can
-be ESM-only with `"engines": { "node": ">=22.12" }` and simply not have the
-problem. I'd been prepared to teach dual publishing; the research says don't.
+be ESM-only with `"engines": { "node": ">=22.13" }` and simply not have the
+problem (floor corrected 2026-08-18, was `>=22.12` — see above). I'd been
+prepared to teach dual publishing; the research says don't.
 
 *Caveat:* ESM-only still hurts consumers stuck on dead Node or on bundlers that
 mis-resolve. For a package whose first user is you, that risk is near zero.
