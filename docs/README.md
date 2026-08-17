@@ -67,10 +67,10 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0-5 done, Phase 6 not started |
+| 5 — Build | ◐ Phase 0-6 done, Phase 7 not started |
 
-**Next action:** Phase 6 of `08-build-plan.md` — GitHub Actions CI: typecheck
-→ test → lint → `publint` → `attw` → `npm pack`.
+**Next action:** Phase 7 of `08-build-plan.md` — release plumbing
+(`changesets`).
 
 ---
 

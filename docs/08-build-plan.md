@@ -106,7 +106,7 @@ vitest, importing from `dist/`, **not** `src/`.
 
 ---
 
-## Phase 6 — CI
+## Phase 6 — CI ✔ done 2026-08-18
 
 GitHub Actions on every PR: typecheck → test → lint → `publint` → `attw` →
 `npm pack`.

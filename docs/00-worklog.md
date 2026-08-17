@@ -505,3 +505,35 @@ an absolute path later.
 
 **Next:** Phase 6 — CI. GitHub Actions on every PR: typecheck → test → lint →
 `publint` → `attw` → `npm pack`.
+
+---
+
+## 2026-08-18 — Session 16 (Phase 6 shipped)
+
+**Done — Phase 6**
+- `.github/workflows/ci.yml`: runs on every PR and push to `main`. Steps:
+  `npm ci` → `npm run typecheck` → `npm run lint` → `npm test` → `npm run
+  packcheck`. Used `actions/checkout@v7` / `actions/setup-node@v7` — checked
+  GitHub's release API directly rather than assume; v6 exists but v7 is
+  actually current for both, so pinned to that instead of an already-
+  superseded version.
+- Added `eslint` + `typescript-eslint` (flat config, `eslint.config.js`),
+  `publint`, and `@arethetypeswrong/cli` (attw) as dev dependencies. Versions
+  confirmed against the real npm registry before installing, not assumed.
+- New `package.json` scripts: `typecheck` (`tsc --noEmit`), `lint`
+  (`eslint .`), `packcheck` (`publint` + `attw --pack . --profile esm-only`).
+
+**One real decision, not a bug:** `attw`'s default profile flags this package
+for failing Node10 resolution and for CJS `require()` only getting dynamic
+`import()`. Both are **expected consequences of the deliberate ESM-only
+design** (Finding 1 in `02-research-craft.md` — the whole reason this project
+went ESM-only is `require(esm)` being stable, not that it needed to also
+support legacy CJS/Node10 resolution). Used attw's `--profile esm-only`,
+built for exactly this case, instead of failing CI on an intended tradeoff.
+
+**Verified:** ran `npm ci` from a clean `node_modules`/`dist`, then all four
+CI steps in order, locally — all pass, matching what the workflow will run.
+
+**Phase 6 status:** ✔ complete.
+
+**Next:** Phase 7 — release plumbing (`changesets`).
