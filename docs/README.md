@@ -44,9 +44,10 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 
 ## Standing constraints — do not violate these
 
-1. **The owner writes the package code.** Your role is to explain each decision
-   and review. Do not author it for them. This was chosen deliberately so they
-   can repeat the process unaided.
+1. **Claude writes the package code.** Changed 2026-08-18 from the original
+   "owner writes it" rule — owner wants to learn the architecture and shipping
+   process, not typing syntax. Claude writes each phase, ships it working, and
+   gives a short note on what/why. Owner reviews and approves, doesn't type code.
 2. **No assumed product.** An earlier draft of this project assumed an "AI slop
    detector" from the initial prompt; the owner rejected it as a premature
    assumption. If a document starts presuming something unvalidated, flag it.
@@ -66,21 +67,22 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0 partly done (repo created) |
+| 5 — Build | ◐ Phase 0 + Phase 1 done, Phase 2 not started |
 
-**Next action:** finish Phase 0 of `08-build-plan.md` — re-verify the two
-`[secondary]` findings against official docs, and turn on npm 2FA. Then Phase 1.
+**Next action:** Phase 2 of `08-build-plan.md` — `parseClaims(markdown)`, the
+function that finds `<!-- claim: -->` comments in a markdown file.
 
 ---
 
 ## Two things the next session must not skip
 
-**1. Phase 0 exists for a reason.** Two findings the whole approach rests on —
-that npm classic tokens are gone, and that `require(esm)` is stable on Node
-22.12+ — came from web-search summaries, because this environment's proxy blocked
-`docs.npmjs.com` and `nodejs.org`. They are tagged `[secondary]` throughout.
-**Re-verify both against official docs before building on them.** If either is
-wrong, the technical approach changes.
+**1. Phase 0 is done — re-verified 2026-08-18.** Two findings the whole approach
+rests on — that npm classic tokens are gone, and that `require(esm)` is stable —
+originally came from web-search summaries because this environment's proxy
+blocked `docs.npmjs.com` and `nodejs.org`. Both were re-checked directly against
+official docs and confirmed (see `00-worklog.md` Session 10 for the one date
+correction found). They remain tagged `[secondary]` in the older research docs
+for the historical record, but are no longer open questions.
 
 **2. The honest state of the case.** The evidence is strong that this problem is
 real *for the owner* — it happened twice in this repo, and they had already

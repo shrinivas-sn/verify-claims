@@ -338,3 +338,55 @@ two `[secondary]` findings ✘. Those two remain before Phase 1.
 
 **Next:** finish Phase 0, then Phase 1 — `package.json` written by hand, by the
 owner, with each field explained.
+
+---
+
+## 2026-08-18 — Session 10 (Phase 0 finished)
+
+**Done**
+- Re-verified both `[secondary]` findings against official docs (Claude opened
+  the pages directly and read them, since the earlier proxy block that forced
+  web-search summaries no longer applies):
+  - `docs.npmjs.com/about-access-tokens`: confirms legacy access tokens were
+    removed and only granular tokens remain — but dates it **November 2025**,
+    not the Dec 9, 2025 date the research had. Substance holds, date corrected.
+  - `nodejs.org/api/modules.html`: confirms `require(esm)` is stable (not
+    experimental), added in v22.0.0/v20.17.0. Trusted publishing (OIDC) also
+    independently confirmed current at `docs.npmjs.com/trusted-publishers`.
+  - Both findings can be relied on for the Phase 1+ technical approach.
+- Owner created an npmjs.com account (`shrinivas-sn`) and turned on 2FA via
+  passkey (device biometric), with one security key also registered.
+
+**Phase 0 status:** repo created ✔ · npm account + 2FA ✔ · re-verification of
+the two `[secondary]` findings ✔. **Phase 0 is complete.**
+
+**Next:** Phase 1 — `package.json` written by hand, by the owner, with each
+field explained.
+
+---
+
+## 2026-08-18 — Session 11 (ownership constraint flipped, Phase 1 shipped)
+
+**Decision:** Owner changed standing constraint #1. Claude now writes all
+package code, ships each phase working, gives a short why-note after. Owner
+reviews and approves, doesn't type code. Reason: owner wants to learn the
+architecture and shipping process, not syntax-typing; the build plan's own
+"done" bar was already "owner can explain every file," not "owner typed every
+file." Updated in `README.md` and `08-build-plan.md`.
+
+**Done — Phase 1**
+- `package.json` (scoped `@shrinivas-sn/verify-claims`, ESM-only, `engines
+  >=22.12`, `files`/`exports`/`bin` wired for a future CLI).
+- `tsconfig.json` (`nodenext` module/resolution, strict, `dist` output).
+- `src/index.ts`, `src/cli.ts` — stub files, just enough for the build
+  pipeline to prove itself; real logic starts Phase 2.
+- Installed `typescript` as the only dev dependency so far.
+- Verified: `npm run build` emits `dist/*.js` + `.d.ts`; `npm pack --dry-run`
+  ships exactly `LICENSE`, `README.md`, `package.json`, `dist/*` — no `src`,
+  no `node_modules`, nothing extra. Local Node is 22.15.0, satisfies the
+  `>=22.12` floor.
+
+**Phase 1 status:** ✔ complete.
+
+**Next:** Phase 2 — write `parseClaims(markdown)`, the function that finds
+`<!-- claim: -->` comments in a markdown file. No CLI yet.

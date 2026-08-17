@@ -1,0 +1,33 @@
+{
+  "name": "@shrinivas-sn/verify-claims",
+  "version": "0.1.0",
+  "description": "Attach the proof to a doc claim, then check it hasn't gone false.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shrinivas-sn/verify-claims.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "bin": {
+    "verify-claims": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"no tests yet\" && exit 0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

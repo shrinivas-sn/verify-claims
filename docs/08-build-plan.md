@@ -1,29 +1,27 @@
 # Step 4 — Build plan for `verify-claims`
 
-Date: 2026-08-15. Written as instructions for the owner to type. Standing
-constraint: the owner writes the code, I explain each decision and review.
+Date: 2026-08-15. Originally written as instructions for the owner to type.
+Updated 2026-08-18: Claude writes the code per phase, ships it working, and
+gives a short why-note. Owner reviews and approves, doesn't type code.
 
 Rule for every phase: **it ships working before the next one starts.** No phase
 is "mostly done".
 
 ---
 
-## Phase 0 — Prep (before any code)
+## Phase 0 — Prep (before any code) ✔ done 2026-08-18
 
-1. **Re-verify the `[secondary]` research.** Step 2 could not reach official docs
-   (proxy blocked). Confirm on `docs.npmjs.com` and `nodejs.org`:
-   - npm classic tokens are gone; trusted publishing is the current path
-   - `require(esm)` is stable on Node 22.12+
-   If either is wrong, the approach changes — so this is first, not later.
-2. npm account + **2FA on**.
-3. New GitHub repo: `verify-claims`. Public. MIT.
-4. Node 24 locally (`.nvmrc`).
+1. ✔ **Re-verified the `[secondary]` research** against `docs.npmjs.com` and
+   `nodejs.org` directly. Both confirmed — see `00-worklog.md` Session 10.
+2. ✔ npm account created (`shrinivas-sn`) + **2FA on** (passkey + security key).
+3. New GitHub repo: `verify-claims`. Public. MIT. — done (Session 9).
+4. Node 24 locally (`.nvmrc`). — still to do, first step of Phase 1.
 
 *Why first: everything downstream assumes these. Cheap now, expensive later.*
 
 ---
 
-## Phase 1 — Skeleton that publishes nothing yet
+## Phase 1 — Skeleton that publishes nothing yet ✔ done 2026-08-18
 
 `package.json`, by hand, not `npm init` — the point is understanding each field:
 
