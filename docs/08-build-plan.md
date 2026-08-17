@@ -49,7 +49,7 @@ only what you intend.
 
 ---
 
-## Phase 2 — Find claims in a markdown file
+## Phase 2 — Find claims in a markdown file ✔ done 2026-08-18
 
 One function. No CLI yet, no running anything.
 

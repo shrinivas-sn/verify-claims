@@ -390,3 +390,25 @@ file." Updated in `README.md` and `08-build-plan.md`.
 
 **Next:** Phase 2 — write `parseClaims(markdown)`, the function that finds
 `<!-- claim: -->` comments in a markdown file. No CLI yet.
+
+---
+
+## 2026-08-18 — Session 12 (Phase 2 shipped)
+
+**Done — Phase 2**
+- `src/parseClaims.ts`: `parseClaims(markdown) → Claim[]`, where a `Claim` is
+  `{ command, claimText, line }`. Finds lines matching
+  `<!-- claim: <command> -->` (must be the whole line, trimmed), then takes
+  the next non-blank line as `claimText`. Skips blank lines in between so a
+  comment followed by an empty line still finds its claim.
+- Exported from `src/index.ts` as the package's public API surface.
+- Verified against a fixture markdown file with 3 claims, an unrelated prose
+  paragraph, and a blank line between one comment and its claim text — all 3
+  parsed correctly with correct line numbers. (Used a local fixture instead of
+  `ghar-khata-software/DOCS` — that repo isn't available in this environment;
+  same effect, real-shaped markdown rather than a synthetic one-liner.)
+
+**Phase 2 status:** ✔ complete.
+
+**Next:** Phase 3 — `verify(claim)`, runs the command and compares the exit
+code. Simplest rule only: non-zero exit = claim false. No output-matching yet.

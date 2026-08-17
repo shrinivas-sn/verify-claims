@@ -67,10 +67,10 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0 + Phase 1 done, Phase 2 not started |
+| 5 — Build | ◐ Phase 0-2 done, Phase 3 not started |
 
-**Next action:** Phase 2 of `08-build-plan.md` — `parseClaims(markdown)`, the
-function that finds `<!-- claim: -->` comments in a markdown file.
+**Next action:** Phase 3 of `08-build-plan.md` — `verify(claim)`, runs the
+command and compares the exit code.
 
 ---
 
