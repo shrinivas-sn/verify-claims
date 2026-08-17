@@ -572,3 +572,43 @@ tooling to work.
 `NPM_TOKEN` secret. Requires registering the trusted publisher on
 npmjs.com first (package Settings → Trusted Publisher) — owner action,
 walked through when we get there.
+
+---
+
+## 2026-08-18 — Session 18 (Phase 8, part 1: first publish, live on npm)
+
+**Realization mid-phase:** trusted publishing (OIDC) can only be registered
+against a package that already exists on the registry — npmjs.com's Trusted
+Publisher UI lives under an existing package's Settings. A never-published
+package has to get its first release some other way. Since my local npm CLI
+wasn't authenticated (checked with `npm whoami`, confirmed `ENEEDAUTH`), and
+publishing under the owner's identity isn't something I should do even if it
+were, **the owner ran the first publish manually**: `npm login` (browser +
+passkey), then `npm publish` from the repo root (browser + passkey again,
+for the publish-specific 2FA challenge since 2FA is on).
+
+**Done**
+- `.github/workflows/release.yml` added: `changesets/action`, triggers on
+  push to `main`, opens/updates a "Version Packages" PR when changesets are
+  pending, publishes via OIDC (`id-token: write`) when merged — no
+  `NPM_TOKEN`. Explicitly upgrades npm in CI (`npm install -g npm@latest`)
+  since trusted publishing needs npm CLI ≥11.5.1, not guaranteed from
+  `setup-node`'s bundled version.
+- **`@shrinivas-sn/verify-claims@0.1.0` is live on npm**, published manually
+  by the owner. `npm publish` auto-corrected `bin["verify-claims"]` from
+  `"./dist/cli.js"` to `"dist/cli.js"` (cosmetic, npm's preferred form) —
+  kept the correction, rebuilt, retested, all still green.
+- **Smoke-tested for real**, fresh temp project, actual registry install:
+  `npm install @shrinivas-sn/verify-claims` → `npx verify-claims claims.md`
+  → correct ✓ output, exit 0. Type declarations present in
+  `node_modules/.../dist/index.d.ts`.
+- Provenance does **not** show on this release — expected, it only applies
+  to OIDC/trusted-publishing releases (confirmed in `docs.npmjs.com` earlier
+  in Phase 0). This manual release was the necessary bootstrap; every
+  release after Part 2 (trusted publisher registration, next) will have it.
+
+**Phase 8 status:** part 1 (workflow + first publish) ✔ done. Part 2
+(register trusted publisher on npmjs.com) — owner action, next.
+
+**Next:** owner registers the trusted publisher on npmjs.com pointing at
+`release.yml`, then Phase 9 — dogfood the tool on this repo's own docs.

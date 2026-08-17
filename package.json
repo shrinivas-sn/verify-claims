@@ -24,7 +24,7 @@
     }
   },
   "bin": {
-    "verify-claims": "./dist/cli.js"
+    "verify-claims": "dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
