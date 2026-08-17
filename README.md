@@ -2,10 +2,24 @@
 
 **Your docs make factual claims. Nothing checks them. This does.**
 
-> ⚠️ **Not built yet.** This repo currently holds only the planning and research.
-> See [`docs/README.md`](./docs/README.md) to pick the work up.
+> 📦 **Published:** [`@shrinivas-sn/verify-claims`](https://www.npmjs.com/package/@shrinivas-sn/verify-claims)
+> on npm. See [`docs/README.md`](./docs/README.md) for build history and status.
 
 ---
+
+## Status
+
+This section checks itself — run `verify-claims README.md` and find out if
+these are still true.
+
+<!-- claim: npm run build -->
+Build: **passes**
+
+<!-- claim: npm run lint -->
+Lint: **clean**
+
+<!-- claim: npm test -->
+Tests: **pass**
 
 ## The problem
 

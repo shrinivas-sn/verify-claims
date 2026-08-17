@@ -22,3 +22,6 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run packcheck
+
+      # Dogfooding: this repo's own docs get checked with the tool it builds.
+      - run: node dist/cli.js "README.md" "docs/**/*.md"
