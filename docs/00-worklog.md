@@ -612,3 +612,67 @@ for the publish-specific 2FA challenge since 2FA is on).
 
 **Next:** owner registers the trusted publisher on npmjs.com pointing at
 `release.yml`, then Phase 9 — dogfood the tool on this repo's own docs.
+
+---
+
+## 2026-08-18 — Session 19 (Phase 8 part 2 + Phase 9 shipped — v1 build done)
+
+**Owner registered the trusted publisher** on npmjs.com (GitHub Actions,
+`shrinivas-sn/verify-claims`, workflow `release.yml`, `npm publish` allowed,
+no environment restriction — solo maintainer, that gate wasn't needed).
+
+**Phase 9 — dogfood:**
+- Fixed the README's own stale claim: the "⚠️ Not built yet" banner was true
+  when written, then quietly went false once the package was built and
+  published — a live instance of the exact problem this tool exists to
+  catch. Replaced with a real published-package banner.
+- Added a "## Status" section to `README.md` using the tool's own
+  `<!-- claim: -->` syntax against `npm run build` / `npm run lint` / `npm
+  test` — the README checks itself.
+- `ci.yml` gained a step running the built CLI against this repo's own
+  `README.md` + `docs/**/*.md` — genuinely eating the dogfood in CI, not
+  just locally.
+- Added a real changeset for this (README ships in the npm package
+  regardless of the `files` field — always included).
+
+**Two real bugs found and fixed while wiring the actual release, both
+things I should have verified instead of trusting memory:**
+1. `release.yml` used `changesets/action`'s old input names (`publish`,
+   `version`) — v2.1.0 renamed them to `publish-script`/`version-script`.
+   Caught by the workflow's own first failed run, fixed immediately.
+2. GitHub blocks the default `GITHUB_TOKEN` from creating PRs unless the
+   repo explicitly allows it (Settings → Actions → General → Workflow
+   permissions). Not a code bug — a repo setting. **Asked the owner for
+   explicit confirmation** before changing it (broadens what the token can
+   do repo-wide), got yes, flipped it via `gh api`
+   (`default_workflow_permissions: write`,
+   `can_approve_pull_request_reviews: true`).
+
+**Full pipeline verified for real, not simulated:**
+- Pushed → CI green (typecheck, lint, test, packcheck, dogfood check) → 
+  `changesets/action` opened a real "Version Packages" PR (`0.1.0` →
+  `0.1.1`) with a correct auto-generated `CHANGELOG.md` entry from the
+  changeset text.
+- **Asked the owner for explicit confirmation before merging** (merging
+  triggers a real, public `npm publish`) — got yes, merged.
+- CI ran the publish job automatically. Verified on the registry:
+  `@shrinivas-sn/verify-claims@0.1.1` live, published by `GitHub Actions
+  <npm-oidc-no-reply@github.com>` (confirms real OIDC, not a stored token),
+  **and `attestations.provenance` present** (SLSA predicate) — the one thing
+  the manual first release couldn't have.
+
+**Phase 8 status:** ✔ fully complete (both parts).
+**Phase 9 status:** ✔ shipped. Ongoing per its own definition — "if the
+owner stops annotating claims, that's the signal the tool doesn't work even
+for its author." Not a one-time task; revisit this call over time.
+
+**All 10 phases of `08-build-plan.md` are now done.** The build-plan's own
+"done means" bar: published ✔, installable ✔, types resolve ✔, provenance
+visible ✔, and the owner can explain every file — carried by the working
+relationship established this session (Claude writes, explains per phase,
+owner reviews/approves) rather than the original "owner types it" mechanism.
+
+**Next:** no fixed next action — this was the last planned phase. Natural
+next steps if the owner wants them: annotate more real docs, watch whether
+claims keep getting added over time (the actual fail-condition test), or
+start a genuinely new package/idea using what got learned here.

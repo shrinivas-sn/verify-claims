@@ -67,11 +67,11 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0-7 done, Phase 8 not started |
+| 5 — Build | ☑ all 10 phases done — v0.1.1 published, live on npm |
 
-**Next action:** Phase 8 of `08-build-plan.md` — publish via GitHub Actions +
-OIDC trusted publishing. Needs an owner step first: register the trusted
-publisher on npmjs.com (package Settings → Trusted Publisher).
+**Next action:** none fixed. All planned phases are complete. See
+`00-worklog.md` Session 19 for the finish line and what a next step could
+look like.
 
 ---
 

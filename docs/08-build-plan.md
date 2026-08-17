@@ -124,7 +124,7 @@ each time.
 
 ---
 
-## Phase 8 — Publish
+## Phase 8 — Publish ✔ done 2026-08-18
 
 GitHub Actions + **OIDC trusted publishing**. No `NPM_TOKEN` secret anywhere.
 
@@ -133,7 +133,7 @@ types resolve, and provenance shows on the npm page.
 
 ---
 
-## Phase 9 — Dogfood
+## Phase 9 — Dogfood ✔ shipped 2026-08-18 (ongoing by definition)
 
 Annotate the real claims in `ghar-khata-software/DOCS`, add the check to that
 repo's CI, and live with it.
