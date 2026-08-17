@@ -1,6 +1,6 @@
 {
   "name": "@shrinivas-sn/verify-claims",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Attach the proof to a doc claim, then check it hasn't gone false.",
   "type": "module",
   "engines": {
