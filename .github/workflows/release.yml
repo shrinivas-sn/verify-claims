@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      # Trusted publishing needs npm CLI >=11.5.1; don't rely on whatever
+      # setup-node's bundled npm happens to be.
+      - run: npm install -g npm@latest
+
+      - run: npm ci
+
+      - name: Create Release Pull Request or Publish
+        uses: changesets/action@v2.1.0
+        with:
+          publish: npm run release
+          version: npm run version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
