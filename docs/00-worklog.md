@@ -537,3 +537,38 @@ CI steps in order, locally — all pass, matching what the workflow will run.
 **Phase 6 status:** ✔ complete.
 
 **Next:** Phase 7 — release plumbing (`changesets`).
+
+---
+
+## 2026-08-18 — Session 17 (Phase 7 shipped)
+
+**Done — Phase 7**
+- `@changesets/cli` installed (version checked against the real registry
+  first). `changeset init` is interactive and can't run non-interactively, so
+  wrote `.changeset/config.json` by hand instead — standard schema, `access:
+  public` (required: scoped packages default to restricted), `baseBranch:
+  main`.
+- Added `publishConfig.access: public` to `package.json` — without it,
+  `npm publish` would reject a scoped package by default regardless of the
+  changesets config.
+- New scripts: `changeset` (record a change), `version` (`changeset
+  version` — bumps + writes `CHANGELOG.md` from pending changesets),
+  `release` (build + `changeset publish`, used in Phase 8's CI job).
+
+**Verified without leaving side effects:** wrote a throwaway demo changeset,
+ran `changeset status --verbose` (read-only) — correctly detected the
+package and computed a patch bump to `0.1.1`. Deleted the demo file before
+committing; real version stays `0.1.0` until an actual release. Re-running
+`changeset status` afterward correctly reported "changed packages with no
+changesets" — expected: Phases 1-6 predate this tool, so that history has no
+changesets, and that's exactly the condition the tool is meant to flag. Not
+wiring `changeset status` into CI as a hard gate — that's an enforcement
+policy decision beyond what this phase asked for, not needed for the
+tooling to work.
+
+**Phase 7 status:** ✔ complete.
+
+**Next:** Phase 8 — publish. GitHub Actions + OIDC trusted publishing, no
+`NPM_TOKEN` secret. Requires registering the trusted publisher on
+npmjs.com first (package Settings → Trusted Publisher) — owner action,
+walked through when we get there.

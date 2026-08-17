@@ -67,10 +67,11 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0-6 done, Phase 7 not started |
+| 5 — Build | ◐ Phase 0-7 done, Phase 8 not started |
 
-**Next action:** Phase 7 of `08-build-plan.md` — release plumbing
-(`changesets`).
+**Next action:** Phase 8 of `08-build-plan.md` — publish via GitHub Actions +
+OIDC trusted publishing. Needs an owner step first: register the trusted
+publisher on npmjs.com (package Settings → Trusted Publisher).
 
 ---
 

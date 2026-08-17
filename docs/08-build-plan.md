@@ -115,7 +115,7 @@ GitHub Actions on every PR: typecheck → test → lint → `publint` → `attw`
 
 ---
 
-## Phase 7 — Release plumbing
+## Phase 7 — Release plumbing ✔ done 2026-08-18
 
 `changesets`. Write a changeset per change; decide patch/minor/major yourself
 each time.
