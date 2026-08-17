@@ -443,3 +443,29 @@ decide."
 
 **Next:** Phase 4 — CLI. `verify-claims "docs/**/*.md"` → readable report,
 exit 1 if any claim failed.
+
+---
+
+## 2026-08-18 — Session 14 (Phase 4 shipped)
+
+**Done — Phase 4**
+- `src/cli.ts`: `verify-claims <pattern...>` — globs markdown files, parses
+  and verifies claims in each, prints a per-file/per-claim report (✓/✗ with
+  line, command, and expected-vs-actual on failure), then a summary line and
+  exit code (`0` all passed, `1` anything failed or no files matched).
+- Added `tinyglobby` as the one runtime dependency, for glob pattern matching.
+  Checked `fs.globSync` (Node's built-in) first — it's still experimental on
+  Node 22.15.0 (prints an `ExperimentalWarning` to stderr), so not shippable
+  in a CLI. `tinyglobby` confirmed on the real npm registry: small dependency
+  footprint (`fdir` + `picomatch`), no bloat.
+- Accepts multiple pattern arguments (not just one), mainly so shell-expanded
+  globs on Unix still work correctly, not just literal quoted patterns.
+
+**Verified (manual, 4 cases):** no arguments → usage message, exit 1 · glob
+matches nothing → error message, exit 1 · one passing + one failing claim in
+a file → correct ✓/✗ report, exit 1 · all-passing file → exit 0.
+
+**Phase 4 status:** ✔ complete.
+
+**Next:** Phase 5 — tests against the built artifact (vitest, importing from
+`dist/`, not `src/`).

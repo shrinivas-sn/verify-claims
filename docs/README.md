@@ -67,10 +67,10 @@ Fastest useful path: this file → `07-decision.md` → `08-build-plan.md`.
 | 2 — Research | ☑ done |
 | 3 — Synthesis + decision | ☑ done |
 | 4 — Build plan | ☑ approved |
-| 5 — Build | ◐ Phase 0-3 done, Phase 4 not started |
+| 5 — Build | ◐ Phase 0-4 done, Phase 5 not started |
 
-**Next action:** Phase 4 of `08-build-plan.md` — CLI. `verify-claims
-"docs/**/*.md"` → readable report, exit 1 if any claim failed.
+**Next action:** Phase 5 of `08-build-plan.md` — tests against the built
+artifact (vitest, importing from `dist/`, not `src/`).
 
 ---
 

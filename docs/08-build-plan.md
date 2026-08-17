@@ -88,7 +88,7 @@ Do **not** add output-matching yet. Ship the simple rule, use it, then decide.
 
 ---
 
-## Phase 4 — CLI
+## Phase 4 — CLI ✔ done 2026-08-18
 
 `verify-claims "DOCS/**/*.md"` → readable report, **exit 1 if any claim failed**.
 
