@@ -5,13 +5,22 @@ export interface Claim {
 }
 
 const CLAIM_COMMENT = /^<!--\s*claim:\s*(.+?)\s*-->$/;
+const FENCE = /^(```|~~~)/;
 
 export function parseClaims(markdown: string): Claim[] {
   const lines = markdown.split(/\r\n|\n/);
   const claims: Claim[] = [];
+  let inFence = false;
 
   for (let i = 0; i < lines.length; i++) {
-    const match = lines[i].trim().match(CLAIM_COMMENT);
+    const trimmed = lines[i].trim();
+    if (FENCE.test(trimmed)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+
+    const match = trimmed.match(CLAIM_COMMENT);
     if (!match) continue;
 
     let claimText = "";

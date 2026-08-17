@@ -98,7 +98,7 @@ That exit code is what makes it work in CI. It is the feature.
 
 ---
 
-## Phase 5 — Tests against the built artifact
+## Phase 5 — Tests against the built artifact ✔ done 2026-08-18
 
 vitest, importing from `dist/`, **not** `src/`.
 

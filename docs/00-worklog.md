@@ -469,3 +469,39 @@ a file → correct ✓/✗ report, exit 1 · all-passing file → exit 0.
 
 **Next:** Phase 5 — tests against the built artifact (vitest, importing from
 `dist/`, not `src/`).
+
+---
+
+## 2026-08-18 — Session 15 (Phase 5 shipped, one real bug found + fixed)
+
+**Done — Phase 5**
+- `vitest` added; `npm test` now runs `npm run build && vitest run` — tests
+  import from `dist/`, never `src/`, per the plan.
+- `test/parseClaims.test.ts`, `test/verify.test.ts`, `test/cli.test.ts` — 11
+  tests total, `test/fixtures/*.md` for realistic markdown inputs.
+- `verify()` gained an optional second parameter, `timeoutMs` (defaults to the
+  existing 60s), so the `errored`/timeout path is actually testable without a
+  real 60-second wait. Small, justified addition to make Phase 3 code
+  testable — not scope creep.
+
+**Bug found and fixed, surfaced by testing against real files (this repo's
+own docs):** `parseClaims` didn't know about fenced code blocks. The example
+snippets in `07-decision.md` and `08-build-plan.md` — meant to *illustrate*
+the `<!-- claim: -->` syntax inside a ` ```markdown ` block — were being
+parsed as real claims and run for real, causing false failures on our own
+docs. Fixed: `parseClaims` now tracks fence state (` ``` ` or `~~~`) and skips
+claim-matching while inside one. Regression test added. Re-ran the CLI
+against `docs/**/*.md` and `README.md` — 0 false positives now.
+
+**Known limitation, not fixing now:** absolute Windows paths (e.g.
+`E:\verify-claims\...`) don't work as glob patterns — `tinyglobby` expects
+forward slashes and mishandles a `E:/...`-style absolute pattern (resolves to
+a garbled path). Not fixing because it's not the documented usage pattern —
+`verify-claims "docs/**/*.md"` (relative, forward-slash) is what the README
+and all examples show, and that works correctly. Flagged for anyone who tries
+an absolute path later.
+
+**Phase 5 status:** ✔ complete.
+
+**Next:** Phase 6 — CI. GitHub Actions on every PR: typecheck → test → lint →
+`publint` → `attw` → `npm pack`.

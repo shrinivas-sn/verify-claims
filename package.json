@@ -25,11 +25,12 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "echo \"no tests yet\" && exit 0"
+    "test": "npm run build && vitest run"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.10"
   },
   "dependencies": {
     "tinyglobby": "^0.2.17"

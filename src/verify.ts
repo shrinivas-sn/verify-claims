@@ -9,11 +9,11 @@ export interface VerifyResult {
 
 const TIMEOUT_MS = 60_000;
 
-export function verify(claim: Claim): VerifyResult {
+export function verify(claim: Claim, timeoutMs: number = TIMEOUT_MS): VerifyResult {
   const expected = "exit code 0";
 
   try {
-    execSync(claim.command, { stdio: "ignore", timeout: TIMEOUT_MS });
+    execSync(claim.command, { stdio: "ignore", timeout: timeoutMs });
     return { status: "ok", expected, actual: "exit code 0" };
   } catch (error) {
     const err = error as NodeJS.ErrnoException & {
