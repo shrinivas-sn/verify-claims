@@ -73,7 +73,7 @@ readable to people who don't have the tool.
 
 ---
 
-## Phase 3 — Run the check and compare
+## Phase 3 — Run the check and compare ✔ done 2026-08-18
 
 ```
 verify(claim) → { status: "ok" | "failed" | "errored", expected, actual }

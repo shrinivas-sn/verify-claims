@@ -412,3 +412,34 @@ file." Updated in `README.md` and `08-build-plan.md`.
 
 **Next:** Phase 3 — `verify(claim)`, runs the command and compares the exit
 code. Simplest rule only: non-zero exit = claim false. No output-matching yet.
+
+---
+
+## 2026-08-18 — Session 13 (Phase 3 shipped)
+
+**Done — Phase 3**
+- `src/verify.ts`: `verify(claim) → { status, expected, actual }`, using
+  `execSync` with a 60s timeout, `stdio: "ignore"` (no output capture — v1
+  doesn't need it, per "don't over-design").
+  - `status: "ok"` — exit code 0.
+  - `status: "failed"` — non-zero exit code (the claim rule: command ran,
+    reported failure).
+  - `status: "errored"` — the process didn't produce an exit code at all
+    (killed by a signal, e.g. the 60s timeout; or a genuine spawn failure).
+- Added `@types/node` as a dev dependency (needed for `node:child_process`
+  and `NodeJS.ErrnoException` types — Phase 1 didn't need it yet).
+
+**Finding, worth knowing:** a nonexistent command (typo'd claim annotation)
+does **not** hit `errored` on this OS. `execSync` always runs through a shell;
+when the shell can't find the command, the *shell* exits non-zero (e.g. 1),
+which looks identical to a real command failing. So a typo in a claim's
+command currently reports as `failed`, not `errored`. Verified with 3 cases:
+exit 0 → ok, exit 1 → failed, nonexistent command → failed (not errored).
+Acceptable for v1 (the claim is false either way, and it still surfaces to
+the user) — not fixing now, matches "ship the simple rule, use it, then
+decide."
+
+**Phase 3 status:** ✔ complete.
+
+**Next:** Phase 4 — CLI. `verify-claims "docs/**/*.md"` → readable report,
+exit 1 if any claim failed.
