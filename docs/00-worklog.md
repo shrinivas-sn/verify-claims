@@ -717,5 +717,35 @@ wrong version of the source.
 next-steps) never reviewed. Not evaluated yet — separate decision from this
 fix, deferred to the owner.
 
-**Status:** engines-floor bug fixed and committed, changeset pending. PR
-`#1` not yet closed — still has unreviewed value (the docs files above).
+**Status:** engines-floor bug fixed, released as `0.1.2` via the automated
+OIDC pipeline (verified live on the registry). PR `#1` not yet closed —
+still has unreviewed value (the docs files above).
+
+---
+
+## 2026-08-18 — Session 21 (README rewritten for usability)
+
+**Owner asked for a more user/developer-friendly `README.md`** — the
+existing one was a pitch/essay (problem, idea, philosophy) with no
+Install, Quick Start, or CLI reference. Someone landing on the repo
+wanting to actually use the tool had nothing concrete to follow.
+
+**Done**
+- Added `Install`, `Quick start` (annotate → run → wire into CI, with
+  real example output), and a `CLI reference` section (exact flag
+  behavior, both exit codes explained — previously undocumented).
+- Kept all the philosophy sections (problem, idea, why-not-X, honest
+  status) but moved them below the practical usage — practical-first
+  ordering.
+- Renamed "Planned scope for v1" → "Scope" (it's shipped, not planned).
+- Added a `Development` section pointing to `docs/00-worklog.md`.
+- Verified: `node dist/cli.js "README.md"` still finds and passes all 3
+  Status-section claims correctly at their new line numbers.
+
+**Status:** committed and pushed to `main`. No new npm release needed for
+this — README content only updates on npm's page at next actual publish,
+not on every GitHub push.
+
+**Next:** none required. All optional: decide on stray PR `#1`'s unreviewed
+docs files, consider extracting a reusable "ship an npm package" recipe,
+or keep dogfooding (the ongoing Phase 9 test).

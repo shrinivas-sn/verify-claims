@@ -2,10 +2,67 @@
 
 **Your docs make factual claims. Nothing checks them. This does.**
 
-> 📦 **Published:** [`@shrinivas-sn/verify-claims`](https://www.npmjs.com/package/@shrinivas-sn/verify-claims)
-> on npm. See [`docs/README.md`](./docs/README.md) for build history and status.
+[![npm version](https://img.shields.io/npm/v/@shrinivas-sn/verify-claims.svg)](https://www.npmjs.com/package/@shrinivas-sn/verify-claims)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 ---
+
+## Install
+
+```bash
+npm install -D @shrinivas-sn/verify-claims
+```
+
+## Quick start
+
+**1. Attach a command to a claim**, using an HTML comment right above it:
+
+```markdown
+<!-- claim: npm run lint -->
+Lint: **0 errors**
+```
+
+The comment renders as nothing on GitHub — the doc still reads normally to
+anyone who's never heard of this tool.
+
+**2. Run it:**
+
+```bash
+npx verify-claims "docs/**/*.md"
+```
+
+```
+docs/README.md
+  ✓ line 12  npm run lint
+  ✗ line 20  npm run build  (expected exit code 0, got exit code 1)
+
+1 passed, 1 failed
+```
+
+**3. Wire it into CI** so a stale claim fails the build, the same way a
+failing test would:
+
+```yaml
+- run: npx verify-claims "docs/**/*.md"
+```
+
+That's the whole tool. Each claim's command actually runs; a non-zero exit
+code means the claim is false.
+
+## CLI reference
+
+```
+verify-claims <pattern...>
+```
+
+- Accepts one or more glob patterns (quote them so the shell doesn't expand
+  them first, e.g. `"docs/**/*.md"`).
+- Prints a ✓/✗ report per claim, with the file, line number, command, and —
+  on failure — the exit code it got.
+- **Exit code 0** — every claim passed.
+- **Exit code 1** — at least one claim failed, or the pattern matched zero
+  files (a silent pass on a typo'd pattern would defeat the point of the
+  tool, so it's treated as an error).
 
 ## Status
 
@@ -41,25 +98,6 @@ That is not hypothetical. From the project this tool came out of:
 The note was true when written. By the time it was read again, the database held
 real records. It was one step from wiping them.
 
-## The idea
-
-Attach the proof to the claim:
-
-```markdown
-<!-- claim: npm run lint -->
-Lint: **0 errors**
-```
-
-Then run it:
-
-```bash
-verify-claims "docs/**/*.md"
-```
-
-It runs each command, reports which claims have gone false, and exits non-zero so
-CI fails. An HTML comment renders as nothing on GitHub, so docs stay readable to
-people who have never heard of this tool.
-
 **Before:** your docs are notes you hope are still true.
 **After:** your docs tell you when they stop being true.
 
@@ -84,13 +122,19 @@ This is being built primarily to learn to publish a production-grade npm package
 properly. That goal holds regardless of adoption. It is not being sold as more
 than that.
 
-## Planned scope for v1
+## Scope
 
 **In:** parse claims from markdown · run the attached command · non-zero exit
 means the claim is false · a readable report · a CLI that fails CI.
 
 **Out:** database checks · template drift · output matching · auto-fix · AI ·
 config files · watch mode · plugins.
+
+## Development
+
+This repo's own history — every decision, correction, and session — is kept
+in [`docs/00-worklog.md`](./docs/00-worklog.md). Start at
+[`docs/README.md`](./docs/README.md) for the full build story.
 
 ## License
 
