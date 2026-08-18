@@ -1,5 +1,13 @@
 # START HERE — npm Package Project
 
+> **Relocated during the docs restructure.** This file was `docs/README.md`;
+> it's now `DOCS/CONTEXT/START-HERE.md`. The relative filenames below (e.g.
+> `00-worklog.md`, `07-decision.md`) describe the pre-restructure flat layout
+> and are kept verbatim as written — current locations: the worklog is split
+> into `DOCS/WORK/2026-08-15/WORK.md` and `DOCS/WORK/2026-08-18/WORK.md`;
+> `01`–`06` are under `DOCS/RESEARCH/`; `07-decision.md`/`08-build-plan.md`
+> are alongside this file in `DOCS/CONTEXT/`; `tools/` is under `DOCS/EXTRA/`.
+
 Entry point for any new session. Read this first, then `00-worklog.md`.
 
 ---
