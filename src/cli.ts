@@ -69,9 +69,18 @@ async function main() {
   let passed = 0;
   let failed = 0;
   let listed = 0;
+  let unreadable = 0;
 
   for (const file of files) {
-    const markdown = readFileSync(file, "utf8");
+    let markdown: string;
+    try {
+      markdown = readFileSync(file, "utf8");
+    } catch (error) {
+      unreadable++;
+      console.log(file);
+      console.log(`  ✗ could not read file (${(error as NodeJS.ErrnoException).code ?? "unknown error"})`);
+      continue;
+    }
     const claims = parseClaims(markdown);
     if (claims.length === 0) continue;
 
@@ -97,12 +106,13 @@ async function main() {
   }
 
   console.log("");
+  const unreadableNote = unreadable > 0 ? `, ${unreadable} unreadable` : "";
   if (dryRun) {
-    console.log(`${listed} claims found, none run`);
-    process.exit(0);
+    console.log(`${listed} claims found, none run${unreadableNote}`);
+    process.exit(unreadable > 0 ? 1 : 0);
   }
-  console.log(`${passed} passed, ${failed} failed`);
-  process.exit(failed > 0 ? 1 : 0);
+  console.log(`${passed} passed, ${failed} failed${unreadableNote}`);
+  process.exit(failed > 0 || unreadable > 0 ? 1 : 0);
 }
 
 main();

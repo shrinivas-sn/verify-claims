@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { chmodSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -18,6 +18,26 @@ function runCli(args: string[]) {
 }
 
 describe("cli", () => {
+  const canChmod = process.platform !== "win32" && process.getuid?.() !== 0;
+
+  it.skipIf(!canChmod)("reports an unreadable file and exits 1 instead of crashing", () => {
+    const dir = join(repoRoot, "test", ".tmp-unreadable");
+    const file = join(dir, "locked.md");
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(file, '<!-- claim: node -e "process.exit(0)" -->\nok\n');
+    chmodSync(file, 0o000);
+    try {
+      const result = runCli(["test/.tmp-unreadable/*.md"]);
+      expect(result.status).toBe(1);
+      expect(result.stdout).toMatch(/could not read file \(EACCES\)/);
+      expect(result.stdout).toMatch(/1 unreadable/);
+      expect(result.stderr).not.toMatch(/at readFileSync/);
+    } finally {
+      chmodSync(file, 0o644);
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
   it("prints usage and exits 1 with no arguments", () => {
     const result = runCli([]);
     expect(result.status).toBe(1);
