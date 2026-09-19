@@ -68,13 +68,13 @@ T9 and Phase 2 are never cut.
 
 ### Phase 0 — Setup
 
-- [ ] **Step 1: Branch off main**
+- [x] **Step 1: Branch off main**
 
 ```bash
 git checkout -b fix/audit-findings
 ```
 
-- [ ] **Step 2: Baseline**
+- [x] **Step 2: Baseline**
 
 Run: `npm test`
 Expected: `Tests  11 passed (11)`. If not, stop; the baseline is broken, so don't start.
@@ -95,7 +95,7 @@ Expected: `Tests  11 passed (11)`. If not, stop; the baseline is broken, so don'
 - Produces: `export const VERSION: string`, always equal to `package.json` `version`. T2's
   `--version` flag prints it.
 
-- [ ] **Step 1: Write the failing test** at `test/index.test.ts`
+- [x] **Step 1: Write the failing test** at `test/index.test.ts`
 
 ```ts
 import { readFileSync } from "node:fs";
@@ -112,12 +112,12 @@ describe("VERSION", () => {
 });
 ```
 
-- [ ] **Step 2: Run it and confirm it fails**
+- [x] **Step 2: Run it and confirm it fails**
 
 Run: `npm test -- test/index.test.ts`
 Expected: FAIL, `expected '0.1.0' to be '0.1.2'`.
 
-- [ ] **Step 3: Implement.** Replace line 1 of `src/index.ts` with:
+- [x] **Step 3: Implement.** Replace line 1 of `src/index.ts` with:
 
 ```ts
 import { readFileSync } from "node:fs";
@@ -132,12 +132,12 @@ export const VERSION = pkg.version;
 (`dist/index.js` → `../package.json` is the package root. npm always ships
 `package.json`, so this resolves for installed copies too.)
 
-- [ ] **Step 4: Run it and confirm it passes**
+- [x] **Step 4: Run it and confirm it passes**
 
 Run: `npm test`
 Expected: all tests pass (12).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/index.ts test/index.test.ts
@@ -158,7 +158,7 @@ git commit -m "fix: read VERSION from package.json instead of hardcoding it"
   `failed`, `listed`, and a `for (const claim of claims)` loop with an `else` failure branch.
   T3, T7 and T8 edit these exact lines.
 
-- [ ] **Step 1: Write the failing tests.** In `test/cli.test.ts`, add under the existing imports:
+- [x] **Step 1: Write the failing tests.** In `test/cli.test.ts`, add under the existing imports:
 
 ```ts
 import { readFileSync } from "node:fs";
@@ -201,12 +201,12 @@ Then add these inside `describe("cli", …)`:
   });
 ```
 
-- [ ] **Step 2: Run them and confirm they fail**
+- [x] **Step 2: Run them and confirm they fail**
 
 Run: `npm test -- test/cli.test.ts`
 Expected: the 4 new tests FAIL (`No files matched: --help` etc.). The 4 old ones pass.
 
-- [ ] **Step 3: Implement.** Replace `src/cli.ts` entirely with:
+- [x] **Step 3: Implement.** Replace `src/cli.ts` entirely with:
 
 ```ts
 #!/usr/bin/env node
@@ -306,13 +306,13 @@ async function main() {
 main();
 ```
 
-- [ ] **Step 4: Run and confirm everything passes**
+- [x] **Step 4: Run and confirm everything passes**
 
 Run: `npm test`
 Expected: all pass (16). The existing "no arguments" test still passes because `USAGE`
 starts with `Usage: verify-claims`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/cli.ts test/cli.test.ts
@@ -335,7 +335,7 @@ git commit -m "feat(cli): add --help, --version, --dry-run; reject unknown flags
   `trimEnd()`-ed and joined by `\n`. It is set only when the command did not pass *and*
   printed something. This is an additive public-API change.
 
-- [ ] **Step 1: Write the failing tests.** Add to `describe("verify", …)` in `test/verify.test.ts`:
+- [x] **Step 1: Write the failing tests.** Add to `describe("verify", …)` in `test/verify.test.ts`:
 
 ```ts
   it("returns what the command printed when it fails", () => {
@@ -370,12 +370,12 @@ Add to `describe("cli", …)` in `test/cli.test.ts`:
   });
 ```
 
-- [ ] **Step 2: Run them and confirm they fail**
+- [x] **Step 2: Run them and confirm they fail**
 
 Run: `npm test`
 Expected: the 2 new tests FAIL. `output` is missing, and nothing is printed under `✗`.
 
-- [ ] **Step 3: Implement `verify.ts`.** Replace the file with:
+- [x] **Step 3: Implement `verify.ts`.** Replace the file with:
 
 ```ts
 import { execSync } from "node:child_process";
@@ -429,7 +429,7 @@ export function verify(claim: Claim, timeoutMs: number = TIMEOUT_MS): VerifyResu
 }
 ```
 
-- [ ] **Step 4: Implement the CLI side.** In `src/cli.ts`, add above `async function main()`:
+- [x] **Step 4: Implement the CLI side.** In `src/cli.ts`, add above `async function main()`:
 
 ```ts
 const TAIL_LINES = 20;
@@ -451,14 +451,14 @@ and in the failure branch, directly after the `console.log(` … `);` that print
         if (result.output) printTail(result.output);
 ```
 
-- [ ] **Step 5: Run and confirm everything passes**
+- [x] **Step 5: Run and confirm everything passes**
 
 Run: `npm test`
 Expected: all pass (18). The timeout test must still finish well under 5 s.
 (Pre-checked 19/09: `execSync` with piped stdio and a 200 ms timeout returned in 209 ms on
 Windows.)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/verify.ts src/cli.ts test/verify.test.ts test/cli.test.ts test/fixtures/noisy-fail.md
@@ -476,7 +476,7 @@ git commit -m "feat: show a failing claim's output instead of discarding it"
 **Interfaces:**
 - Produces: `CLAIM_COMMENT` is reused inside the `claimText` search. No signature change.
 
-- [ ] **Step 1: Write the failing test.** Add to `describe("parseClaims", …)`:
+- [x] **Step 1: Write the failing test.** Add to `describe("parseClaims", …)`:
 
 ```ts
   it("gives stacked claims the text below them, not each other's comment", () => {
@@ -493,12 +493,12 @@ git commit -m "feat: show a failing claim's output instead of discarding it"
   });
 ```
 
-- [ ] **Step 2: Run it and confirm it fails**
+- [x] **Step 2: Run it and confirm it fails**
 
 Run: `npm test -- test/parseClaims.test.ts`
 Expected: FAIL. The first claim's `claimText` is `"<!-- claim: npm test -->"`.
 
-- [ ] **Step 3: Implement.** Replace the `claimText` loop with:
+- [x] **Step 3: Implement.** Replace the `claimText` loop with:
 
 ```ts
     let claimText = "";
@@ -511,9 +511,9 @@ Expected: FAIL. The first claim's `claimText` is `"<!-- claim: npm test -->"`.
     }
 ```
 
-- [ ] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass (19).
+- [x] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass (19).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/parseClaims.ts test/parseClaims.test.ts
@@ -532,7 +532,7 @@ git commit -m "fix(parser): stacked claims share the statement below them"
 - Produces: `FENCE = /^(`{3,}|~{3,})/`, and a loop-local `openFence: string` that replaces
   `inFence: boolean`. T6 adds one line **above** this block.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```ts
   it("keeps a longer fence open across a shorter nested fence", () => {
@@ -569,12 +569,12 @@ git commit -m "fix(parser): stacked claims share the statement below them"
   });
 ```
 
-- [ ] **Step 2: Run them and confirm they fail**
+- [x] **Step 2: Run them and confirm they fail**
 
 Run: `npm test -- test/parseClaims.test.ts`
 Expected: both FAIL, because `npm run lint` is picked up as a claim.
 
-- [ ] **Step 3: Implement.** Change line 8 to:
+- [x] **Step 3: Implement.** Change line 8 to:
 
 ```ts
 const FENCE = /^(`{3,}|~{3,})/;
@@ -606,10 +606,10 @@ Replace `let inFence = false;` and the fence block at the top of the loop (from
 (The `for` header moves into this block, so delete the old `for (…) {` line. Everything from
 `const match = trimmed.match(CLAIM_COMMENT);` onward stays as it is.)
 
-- [ ] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass (21),
+- [x] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass (21),
   including the original "fenced code block" test.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/parseClaims.ts test/parseClaims.test.ts
@@ -628,7 +628,7 @@ git commit -m "fix(parser): close fences only on a matching CommonMark fence"
 - Consumes: T5's loop.
 - Produces: `INDENTED = /^( {4}|\t)/`, checked on the raw (untrimmed) line.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
   it("ignores claim comments in an indented code block", () => {
@@ -650,10 +650,10 @@ git commit -m "fix(parser): close fences only on a matching CommonMark fence"
   });
 ```
 
-- [ ] **Step 2: Run it and confirm it fails.** Run: `npm test -- test/parseClaims.test.ts`.
+- [x] **Step 2: Run it and confirm it fails.** Run: `npm test -- test/parseClaims.test.ts`.
   Expected: FAIL, with 3 claims found instead of 1.
 
-- [ ] **Step 3: Implement.** Under the `FENCE` constant, add:
+- [x] **Step 3: Implement.** Under the `FENCE` constant, add:
 
 ```ts
 // Four spaces or a tab starts an indented code block in CommonMark: example text, never a claim.
@@ -669,9 +669,9 @@ Then make this the **first** line inside the `for` loop, above `const trimmed = 
 (This is safe inside an open fence too. A line indented 4+ spaces can't be a CommonMark
 closing fence, so skipping it changes nothing there.)
 
-- [ ] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass (22).
+- [x] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass (22).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/parseClaims.ts test/parseClaims.test.ts
@@ -695,7 +695,7 @@ The test needs `chmod`, so it is **POSIX-only**. It is skipped on Windows and wh
 as root. It runs for real in CI (ubuntu, non-root runner). On a Windows machine, confirm it
 shows as `skipped`, then rely on CI for the actual run.
 
-- [ ] **Step 1: Write the failing test.** Extend the `node:fs` import in `test/cli.test.ts` to:
+- [x] **Step 1: Write the failing test.** Extend the `node:fs` import in `test/cli.test.ts` to:
 
 ```ts
 import { chmodSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -725,10 +725,10 @@ Then add inside `describe("cli", …)`:
   });
 ```
 
-- [ ] **Step 2: Run it.** Run: `npm test -- test/cli.test.ts`.
+- [x] **Step 2: Run it.** Run: `npm test -- test/cli.test.ts`.
   Expected on Linux/macOS: FAIL with an `EACCES` stack trace. Expected on Windows: `skipped`.
 
-- [ ] **Step 3: Implement.** In `src/cli.ts`, add `let unreadable = 0;` next to the other
+- [x] **Step 3: Implement.** In `src/cli.ts`, add `let unreadable = 0;` next to the other
   counters, and replace `const markdown = readFileSync(file, "utf8");` with:
 
 ```ts
@@ -756,10 +756,10 @@ Replace the summary block (from `console.log("");` to the final `process.exit`) 
   process.exit(failed > 0 || unreadable > 0 ? 1 : 0);
 ```
 
-- [ ] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass. On
+- [x] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass. On
   Windows, 1 is skipped.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/cli.ts test/cli.test.ts
@@ -779,7 +779,7 @@ git commit -m "fix(cli): report unreadable files instead of crashing"
 The test is **Windows-only**, and this machine is Windows, so it runs locally. Absolute
 forward-slash paths already work (checked 19/09). Only backslashes fail.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
   it.runIf(process.platform === "win32")("accepts backslash paths on Windows", () => {
@@ -800,10 +800,10 @@ Replace the comment above `const fixture = …` with:
 // (`verify-claims "docs/**/*.md"`). Backslash paths have their own Windows-only test.
 ```
 
-- [ ] **Step 2: Run it and confirm it fails.** Run: `npm test -- test/cli.test.ts`.
+- [x] **Step 2: Run it and confirm it fails.** Run: `npm test -- test/cli.test.ts`.
   Expected: FAIL, `No files matched: test\fixtures\clean.md`.
 
-- [ ] **Step 3: Implement.** Replace `const files = (await glob(patterns)).sort();` with:
+- [x] **Step 3: Implement.** Replace `const files = (await glob(patterns)).sort();` with:
 
 ```ts
   // tinyglobby only understands "/". On Windows a backslash is always a separator, never an escape.
@@ -812,9 +812,9 @@ Replace the comment above `const fixture = …` with:
   const files = (await glob(globPatterns)).sort();
 ```
 
-- [ ] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass.
+- [x] **Step 4: Run and confirm everything passes.** Run: `npm test`. Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/cli.ts test/cli.test.ts
@@ -832,7 +832,7 @@ git commit -m "fix(cli): accept backslash paths on Windows"
 
 Only document what actually shipped. If T6 or T8 was cut, leave out its bullet.
 
-- [ ] **Step 1: README, "CLI reference".** Replace the fenced usage line and the bullet list
+- [x] **Step 1: README, "CLI reference".** Replace the fenced usage line and the bullet list
   with:
 
 ````markdown
@@ -873,7 +873,7 @@ commands wherever you run this tool.
   will execute before trusting it.
 ````
 
-- [ ] **Step 2: README, fix the dead links.** Change
+- [x] **Step 2: README, fix the dead links.** Change
   `[`docs/07-decision.md`](./docs/07-decision.md)` to
   `[`DOCS/CONTEXT/07-decision.md`](./DOCS/CONTEXT/07-decision.md)`. Replace the
   "Development" paragraph with:
@@ -883,7 +883,7 @@ This repo's own history — every decision, correction, and session — is kept
 under [`DOCS/`](./DOCS/README.md). Start at its index for the full build story.
 ```
 
-- [ ] **Step 3: README, Quick start sample output.** Add one indented output line under the
+- [x] **Step 3: README, Quick start sample output.** Add one indented output line under the
   `✗` line so the sample matches the new behavior:
 
 ```
@@ -895,7 +895,7 @@ docs/README.md
 1 passed, 1 failed
 ```
 
-- [ ] **Step 4: CI dogfood.** In `.github/workflows/ci.yml`, change the last line to:
+- [x] **Step 4: CI dogfood.** In `.github/workflows/ci.yml`, change the last line to:
 
 ```yaml
       - run: node dist/cli.js "README.md"
@@ -904,7 +904,7 @@ docs/README.md
 (`docs/**/*.md` has matched nothing on Linux since the `DOCS/` restructure, and `DOCS/`
 holds no claims. Checked 19/09: zero claims in `DOCS/**/*.md`.)
 
-- [ ] **Step 5: Changeset.** Create `.changeset/audit-fixes.md`:
+- [x] **Step 5: Changeset.** Create `.changeset/audit-fixes.md`:
 
 ```markdown
 ---
@@ -917,7 +917,7 @@ parsed as claims, backslash paths on Windows, a crash on unreadable files, and t
 `VERSION` export.
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add README.md .github/workflows/ci.yml .changeset/audit-fixes.md
@@ -928,7 +928,7 @@ git commit -m "docs: document new flags, security model, and fix dead links"
 
 ### Phase 2 — Verification
 
-- [ ] **Step 1: Full gate**
+- [x] **Step 1: Full gate**
 
 ```bash
 npm run typecheck && npm run lint && npm test && npm run packcheck
@@ -936,9 +936,9 @@ npm run typecheck && npm run lint && npm test && npm run packcheck
 
 Expected: every command exits 0. `publint` and `attw` report no problems.
 
-- [ ] **Step 2: Dogfood.** Run: `node dist/cli.js README.md`. Expected: `3 passed, 0 failed`.
+- [x] **Step 2: Dogfood.** Run: `node dist/cli.js README.md`. Expected: `3 passed, 0 failed`.
 
-- [ ] **Step 3: Spot-check by hand**
+- [x] **Step 3: Spot-check by hand**
 
 ```bash
 node dist/cli.js --version            # 0.1.2 (the changeset bumps it on release, not now)
@@ -946,7 +946,7 @@ node dist/cli.js --dry-run README.md  # 3 claims found, none run
 node dist/cli.js --bogus              # Unknown option '--bogus' … exit 1
 ```
 
-- [ ] **Step 4: Log it.** Append a Progress Log entry with the real output of Steps 1–3.
+- [x] **Step 4: Log it.** Append a Progress Log entry with the real output of Steps 1–3.
 
 **Gate — needs the user.** Pushing the branch, opening the PR and merging are the user's
 call. Merging to `main` makes the Changesets action open a "Version Packages" PR. Merging
@@ -1006,3 +1006,52 @@ Surprises:  Bug 4 is mostly not real: directories never reach readFileSync. Gap 
             nothing since the DOCS/ restructure. None of that was in the audit.
 Next:       Phase 0 step 1: `git checkout -b fix/audit-findings`, then Task 1.
 Commit:     see /save-check commit for this session
+
+### Execution — 19/09/2026 (Phase 0 – Phase 2)
+Done:       Branched `fix/audit-findings` off `main` and ran all 9 tasks TDD (failing test →
+            implement → full pass → commit), then the Phase 2 verification gate. Nothing hit
+            the 40-minute cut line — total elapsed 21:16–21:23 (~7 min) — so T6 and T8 both
+            shipped, nothing was cut.
+Verified:   Baseline: `npm test` → Test Files 3 passed (3), Tests 11 passed (11).
+            T1: new test failed `expected '0.1.0' to be '0.1.2'`, then `npm test` → 12 passed.
+            T2: 4 new cli tests failed first, then `npm test` → 16 passed.
+            T3: verify/cli tests failed first (missing `output`), then `npm test` → 18 passed;
+            timeout test still finished well under the 5s bound.
+            T4: stacked-claims test failed first (`claimText` was the other comment), then
+            `npm test` → 19 passed.
+            T5: both fence tests failed first, then `npm test` → 21 passed, including the
+            original fenced-code-block test.
+            T6: indented-block test failed first (3 claims instead of 1), then `npm test` →
+            22 passed.
+            T7: `npm test -- test/cli.test.ts` → 9 passed, 1 skipped (chmod test correctly
+            skips on Windows per `canChmod`). Full suite after implementing → 22 passed, 1
+            skipped.
+            T8: backslash test failed first (status 1, "No files matched"), then `npm test` →
+            23 passed, 1 skipped.
+            T9: README/CI/changeset edits made; `npm test` → still 23 passed, 1 skipped (no
+            regression).
+            Phase 2 Step 1 full gate:
+              `npm run typecheck` → exit 0.
+              `npm run lint` → exit 0.
+              `npm test` → Test Files 4 passed (4), Tests 23 passed | 1 skipped (24).
+              `npm run packcheck` → publint "All good!"; attw: node16 (ESM) 🟢, bundler 🟢
+              (node10 and node16-from-CJS both (ignored) per the `esm-only` profile).
+            Phase 2 Step 2 dogfood: `node dist/cli.js README.md` →
+              `README.md` / `✓ line 96  npm run build` / `✓ line 99  npm run lint` /
+              `✓ line 102  npm test` / `3 passed, 0 failed`.
+            Phase 2 Step 3 spot-checks:
+              `node dist/cli.js --version` → `0.1.2`.
+              `node dist/cli.js --dry-run README.md` → lists all 3 claims, `3 claims found,
+              none run`.
+              `node dist/cli.js --bogus` → `Unknown option '--bogus'. …`, usage printed,
+              exit 1.
+            9 commits on `fix/audit-findings` (`git log --oneline fix/audit-findings
+            ^main`): 7a8dbbe, de49d70, c224259, 8e19cf2, f35c83b, 8bb5762, 6370ad6, 027ab26,
+            cf6e46f.
+Surprises:  None — every step matched the plan's predicted failure/pass output exactly. No
+            deviations from the written implementation.
+Next:       Phase 2's final gate needs the user: push `fix/audit-findings`, open the PR, and
+            decide on merging (which triggers the Changesets "Version Packages" PR, and
+            merging *that* publishes 0.2.0 to npm — irreversible). None of that was done this
+            session per instruction.
+Commit:     cf6e46f (HEAD of fix/audit-findings this session; branch not pushed)
