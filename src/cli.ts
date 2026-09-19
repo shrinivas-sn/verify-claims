@@ -60,7 +60,10 @@ async function main() {
   }
   const dryRun = values["dry-run"] === true;
 
-  const files = (await glob(patterns)).sort();
+  // tinyglobby only understands "/". On Windows a backslash is always a separator, never an escape.
+  const globPatterns =
+    process.platform === "win32" ? patterns.map((p) => p.replaceAll("\\", "/")) : patterns;
+  const files = (await glob(globPatterns)).sort();
   if (files.length === 0) {
     console.error(`No files matched: ${patterns.join(" ")}`);
     process.exit(1);

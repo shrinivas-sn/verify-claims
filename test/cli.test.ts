@@ -8,9 +8,8 @@ const testDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(testDir, "..");
 const cliPath = join(repoRoot, "dist", "cli.js");
 const pkgVersion = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")).version;
-// Relative, forward-slash patterns only — matches documented real usage
-// (`verify-claims "docs/**/*.md"`). Absolute Windows paths break tinyglobby's
-// matching; see the Phase 5 worklog entry.
+// Relative, forward-slash patterns, matching documented real usage
+// (`verify-claims "docs/**/*.md"`). Backslash paths have their own Windows-only test.
 const fixture = (name: string) => `test/fixtures/${name}`;
 
 function runCli(args: string[]) {
@@ -36,6 +35,16 @@ describe("cli", () => {
       chmodSync(file, 0o644);
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+
+  it.runIf(process.platform === "win32")("accepts backslash paths on Windows", () => {
+    const relative = runCli(["test\\fixtures\\clean.md"]);
+    expect(relative.status).toBe(0);
+    expect(relative.stdout).toMatch(/1 passed, 0 failed/);
+
+    const absolute = runCli([join(repoRoot, "test", "fixtures", "clean.md")]);
+    expect(absolute.status).toBe(0);
+    expect(absolute.stdout).toMatch(/1 passed, 0 failed/);
   });
 
   it("prints usage and exits 1 with no arguments", () => {
