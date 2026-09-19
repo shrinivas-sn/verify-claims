@@ -67,4 +67,37 @@ describe("parseClaims", () => {
       { command: "npm test", claimText: "Build: passes", line: 2 },
     ]);
   });
+
+  it("keeps a longer fence open across a shorter nested fence", () => {
+    const markdown = [
+      "````markdown",
+      "```",
+      "<!-- claim: npm run lint -->",
+      "```",
+      "````",
+      "",
+      "<!-- claim: npm test -->",
+      "Tests: **pass**",
+    ].join("\n");
+
+    expect(parseClaims(markdown)).toEqual([
+      { command: "npm test", claimText: "Tests: **pass**", line: 7 },
+    ]);
+  });
+
+  it("does not let a ~~~ line close a ``` fence", () => {
+    const markdown = [
+      "```",
+      "~~~",
+      "<!-- claim: npm run lint -->",
+      "```",
+      "",
+      "<!-- claim: npm test -->",
+      "Tests: **pass**",
+    ].join("\n");
+
+    expect(parseClaims(markdown)).toEqual([
+      { command: "npm test", claimText: "Tests: **pass**", line: 6 },
+    ]);
+  });
 });

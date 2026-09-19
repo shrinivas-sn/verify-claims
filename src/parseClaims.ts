@@ -5,20 +5,28 @@ export interface Claim {
 }
 
 const CLAIM_COMMENT = /^<!--\s*claim:\s*(.+?)\s*-->$/;
-const FENCE = /^(```|~~~)/;
+const FENCE = /^(`{3,}|~{3,})/;
 
 export function parseClaims(markdown: string): Claim[] {
   const lines = markdown.split(/\r\n|\n/);
   const claims: Claim[] = [];
-  let inFence = false;
+  let openFence = ""; // the ``` or ~~~ run that opened the current fence; "" when outside one
 
   for (let i = 0; i < lines.length; i++) {
     const trimmed = lines[i].trim();
-    if (FENCE.test(trimmed)) {
-      inFence = !inFence;
+    const fence = trimmed.match(FENCE)?.[1];
+
+    if (openFence) {
+      // CommonMark: only a bare run of the same character, at least as long, closes a fence.
+      if (fence && fence[0] === openFence[0] && fence.length >= openFence.length && trimmed === fence) {
+        openFence = "";
+      }
       continue;
     }
-    if (inFence) continue;
+    if (fence) {
+      openFence = fence;
+      continue;
+    }
 
     const match = trimmed.match(CLAIM_COMMENT);
     if (!match) continue;
