@@ -41,4 +41,18 @@ describe("verify", () => {
     expect(result.status).toBe("errored");
     expect(result.actual).toMatch(/signal/);
   });
+
+  it("returns what the command printed when it fails", () => {
+    const result = verify({
+      command: `node -e "console.log('out-line'); console.error('err-line'); process.exit(2)"`,
+      claimText: "",
+      line: 1,
+    });
+    expect(result).toEqual({
+      status: "failed",
+      expected: "exit code 0",
+      actual: "exit code 2",
+      output: "out-line\nerr-line",
+    });
+  });
 });

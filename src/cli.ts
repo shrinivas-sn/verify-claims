@@ -32,6 +32,18 @@ function readArgs() {
   }
 }
 
+const TAIL_LINES = 20;
+
+// Test runners and linters put their verdict at the end, so show the tail, not the head.
+function printTail(output: string) {
+  const lines = output.split(/\r?\n/);
+  const tail = lines.slice(-TAIL_LINES);
+  if (lines.length > tail.length) {
+    console.log(`      … ${lines.length - tail.length} earlier lines hidden`);
+  }
+  for (const line of tail) console.log(`      ${line}`);
+}
+
 async function main() {
   const { values, positionals: patterns } = readArgs();
   if (values.help) {
@@ -79,6 +91,7 @@ async function main() {
         console.log(
           `  ✗ line ${claim.line}  ${claim.command}  (expected ${result.expected}, got ${result.actual})`,
         );
+        if (result.output) printTail(result.output);
       }
     }
   }

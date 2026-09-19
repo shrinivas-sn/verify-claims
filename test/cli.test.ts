@@ -44,6 +44,12 @@ describe("cli", () => {
     expect(result.stdout).toMatch(/1 passed, 1 failed/);
   });
 
+  it("prints the failing command's output under its ✗ line", () => {
+    const result = runCli([fixture("noisy-fail.md")]);
+    expect(result.status).toBe(1);
+    expect(result.stdout).toMatch(/✗ line 1 .*\n {6}lint: 3 problems/);
+  });
+
   it("prints help and exits 0 for --help", () => {
     const result = runCli(["--help"]);
     expect(result.status).toBe(0);
