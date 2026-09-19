@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -6,6 +7,7 @@ import { describe, expect, it } from "vitest";
 const testDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(testDir, "..");
 const cliPath = join(repoRoot, "dist", "cli.js");
+const pkgVersion = JSON.parse(readFileSync(join(repoRoot, "package.json"), "utf8")).version;
 // Relative, forward-slash patterns only — matches documented real usage
 // (`verify-claims "docs/**/*.md"`). Absolute Windows paths break tinyglobby's
 // matching; see the Phase 5 worklog entry.
@@ -40,5 +42,32 @@ describe("cli", () => {
     expect(result.stdout).toMatch(/✓ line 3/);
     expect(result.stdout).toMatch(/✗ line 8/);
     expect(result.stdout).toMatch(/1 passed, 1 failed/);
+  });
+
+  it("prints help and exits 0 for --help", () => {
+    const result = runCli(["--help"]);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toMatch(/Usage: verify-claims/);
+  });
+
+  it("prints the package version and exits 0 for --version", () => {
+    const result = runCli(["--version"]);
+    expect(result.status).toBe(0);
+    expect(result.stdout.trim()).toBe(pkgVersion);
+  });
+
+  it("rejects an unknown flag instead of treating it as a glob", () => {
+    const result = runCli(["--nope", fixture("clean.md")]);
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/Unknown option '--nope'/);
+    expect(result.stderr).not.toMatch(/No files matched/);
+  });
+
+  it("lists claims without running them under --dry-run", () => {
+    const result = runCli(["--dry-run", fixture("mixed.md")]);
+    expect(result.status).toBe(0);
+    expect(result.stdout).toMatch(/- line 8 {2}node -e "process\.exit\(1\)"/);
+    expect(result.stdout).toMatch(/2 claims found, none run/);
+    expect(result.stdout).not.toMatch(/✗/);
   });
 });
