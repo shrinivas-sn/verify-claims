@@ -21,7 +21,8 @@ See `CONTEXT/` for the project overview, the decision record, the build plan,
 and this project's own `START-HERE.md` orientation doc (relocated, paths inside
 it describe the old flat layout — see the note at its top). `RESEARCH/` holds
 the discovery-phase research (clarifying questions through GitHub-wide pattern
-analysis). `EXTRA/tools/` holds the two measurement scripts used during
+analysis), plus `09-codebase-audit-v0.1.2.md`, the post-release audit behind
+the live `/PLAN.md`. Current state: `STATUS.md`. `EXTRA/tools/` holds the two measurement scripts used during
 research (niche crowdedness, staleness probes).
 
 **Status** — `active` (in progress), `done` (finished, not touched again), `superseded`

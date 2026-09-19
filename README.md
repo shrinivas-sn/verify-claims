@@ -35,6 +35,7 @@ npx verify-claims "docs/**/*.md"
 docs/README.md
   ✓ line 12  npm run lint
   ✗ line 20  npm run build  (expected exit code 0, got exit code 1)
+      src/index.ts(4,7): error TS2322: Type 'string' is not assignable to type 'number'.
 
 1 passed, 1 failed
 ```
@@ -52,17 +53,40 @@ code means the claim is false.
 ## CLI reference
 
 ```
-verify-claims <pattern...>
+verify-claims [options] <pattern...>
 ```
 
+| Option | Does |
+|---|---|
+| `--dry-run` | Lists every claim and its command without running anything |
+| `-h`, `--help` | Shows usage |
+| `-v`, `--version` | Shows the installed version |
+
 - Accepts one or more glob patterns (quote them so the shell doesn't expand
-  them first, e.g. `"docs/**/*.md"`).
+  them first, e.g. `"docs/**/*.md"`). Backslash paths work on Windows.
+- Runs each command through the platform's default shell (`/bin/sh` on
+  Linux/macOS, `cmd.exe` on Windows), from the directory you run
+  `verify-claims` in. A claim that only works in bash will fail on Windows.
 - Prints a ✓/✗ report per claim, with the file, line number, command, and —
-  on failure — the exit code it got.
+  on failure — the exit code and the last 20 lines the command printed.
+- Claims inside fenced (```` ``` ```` / `~~~`) or indented code blocks are
+  ignored, so docs can show the syntax without running it. Several claim
+  comments stacked above one line all check that line.
 - **Exit code 0** — every claim passed.
-- **Exit code 1** — at least one claim failed, or the pattern matched zero
-  files (a silent pass on a typo'd pattern would defeat the point of the
-  tool, so it's treated as an error).
+- **Exit code 1** — at least one claim failed, a file couldn't be read, or
+  the pattern matched zero files (a silent pass on a typo'd pattern would
+  defeat the point of the tool, so it's treated as an error).
+
+## Security
+
+A claim is a shell command, and `verify-claims` runs it. That is the same
+trust level as `npm run`: anyone who can edit your markdown can run
+commands wherever you run this tool.
+
+- Don't run it in `pull_request_target` workflows, or in any job that holds
+  secrets while checking out untrusted pull request code.
+- Run `verify-claims --dry-run "docs/**/*.md"` to see exactly what a doc
+  will execute before trusting it.
 
 ## Status
 
@@ -108,8 +132,8 @@ code this text points at changed?"* by parsing. That cannot answer `"0 errors"` 
 only running the linter can. `markdown-doctest` has not shipped in over 2,000
 days and `eslint-plugin-markdown` is deprecated.
 
-See [`docs/07-decision.md`](./docs/07-decision.md) for the full reasoning,
-including where the case is weak.
+See [`DOCS/CONTEXT/07-decision.md`](./DOCS/CONTEXT/07-decision.md) for the full
+reasoning, including where the case is weak.
 
 ## Honest status
 
@@ -133,8 +157,7 @@ config files · watch mode · plugins.
 ## Development
 
 This repo's own history — every decision, correction, and session — is kept
-in [`docs/00-worklog.md`](./docs/00-worklog.md). Start at
-[`docs/README.md`](./docs/README.md) for the full build story.
+under [`DOCS/`](./DOCS/README.md). Start at its index for the full build story.
 
 ## License
 

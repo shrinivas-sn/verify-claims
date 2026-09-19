@@ -110,3 +110,28 @@ This document records the exact, verified technical findings, code bugs, edge ca
 | **Working Directory** | Configurable (`--cwd` or relative to target file) | Fixed to `process.cwd()` |
 | **Security Controls** | Sandboxed or restricted execution scope | Unsanitized shell execution of arbitrary markdown comments |
 | **Validation Scope** | Deep semantic validation | Exit code 0 only (doc text is ignored) |
+
+---
+
+## Verification — 19/09/2026
+
+Checked against the code at `801bb64` (v0.1.2), `npm test` baseline 11/11 passing.
+Added after the fact; the findings above are left as written.
+
+| Finding | Result | Evidence |
+|---|---|---|
+| Bug 1 — `VERSION` | Confirmed | `src/index.ts:1` is `"0.1.0"`, `package.json` is `0.1.2` |
+| Bug 2 — stacked claims | Confirmed | `parseClaims` gave claim 1 the text `"<!-- claim: npm test -->"` |
+| Bug 3 — `--help` as glob | Confirmed | `node dist/cli.js --help` → `No files matched: --help`, exit 1 |
+| Bug 4 — crash on read | **Narrowed** | Directories never reach `readFileSync` (tinyglobby returns files only; `verify-claims fixtures` expanded to its files). Only `EACCES` on an unreadable file remains. |
+| Gap 1 — no output | Confirmed | `stdio: "ignore"` in `src/verify.ts:16` |
+| Gap 2 — text not checked | Confirmed, **out of scope** | "Output matching" is on the v1 exclusion list in `DOCS/CONTEXT/07-decision.md` and `08-build-plan.md` |
+| Gap 3 — cwd | Confirmed, deferred | Changing it would change what every existing claim runs |
+| Gap 4 — serial | Confirmed, deferred | README's own `npm run build` and `npm test` claims both write `dist/`, so running them in parallel would race |
+| Security | Confirmed as a doc gap | The decision record said to "state it plainly in the README"; the README has no such section |
+| Edge 1 — fences | Confirmed (nesting, `~~~` vs backticks, indented code). Blockquote claims stay ignored on purpose. | |
+| Edge 2 — Windows paths | **Narrowed** | `E:/…/clean.md` works; only backslash paths fail (`test\fixtures\clean.md` → no match) |
+| Edge 3 — shell | Confirmed, docs only | No cross-shell layer planned |
+| Not in the audit | New | README links `./docs/07-decision.md` (moved to `DOCS/CONTEXT/`); CI dogfoods `"docs/**/*.md"`, which matches nothing on Linux since the restructure |
+
+The work is planned in `/PLAN.md`.
