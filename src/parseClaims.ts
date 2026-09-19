@@ -26,10 +26,10 @@ export function parseClaims(markdown: string): Claim[] {
     let claimText = "";
     for (let j = i + 1; j < lines.length; j++) {
       const next = lines[j].trim();
-      if (next !== "") {
-        claimText = next;
-        break;
-      }
+      // Several commands stacked above one statement all prove that statement.
+      if (next === "" || CLAIM_COMMENT.test(next)) continue;
+      claimText = next;
+      break;
     }
 
     claims.push({ command: match[1], claimText, line: i + 1 });

@@ -54,4 +54,17 @@ describe("parseClaims", () => {
       { command: "npm test", claimText: "Tests: **pass**", line: 8 },
     ]);
   });
+
+  it("gives stacked claims the text below them, not each other's comment", () => {
+    const markdown = [
+      "<!-- claim: npm run lint -->",
+      "<!-- claim: npm test -->",
+      "Build: passes",
+    ].join("\n");
+
+    expect(parseClaims(markdown)).toEqual([
+      { command: "npm run lint", claimText: "Build: passes", line: 1 },
+      { command: "npm test", claimText: "Build: passes", line: 2 },
+    ]);
+  });
 });
