@@ -6,6 +6,8 @@ export interface Claim {
 
 const CLAIM_COMMENT = /^<!--\s*claim:\s*(.+?)\s*-->$/;
 const FENCE = /^(`{3,}|~{3,})/;
+// Four spaces or a tab starts an indented code block in CommonMark: example text, never a claim.
+const INDENTED = /^( {4}|\t)/;
 
 export function parseClaims(markdown: string): Claim[] {
   const lines = markdown.split(/\r\n|\n/);
@@ -13,6 +15,7 @@ export function parseClaims(markdown: string): Claim[] {
   let openFence = ""; // the ``` or ~~~ run that opened the current fence; "" when outside one
 
   for (let i = 0; i < lines.length; i++) {
+    if (INDENTED.test(lines[i])) continue;
     const trimmed = lines[i].trim();
     const fence = trimmed.match(FENCE)?.[1];
 

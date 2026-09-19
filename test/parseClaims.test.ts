@@ -100,4 +100,22 @@ describe("parseClaims", () => {
       { command: "npm test", claimText: "Tests: **pass**", line: 6 },
     ]);
   });
+
+  it("ignores claim comments in an indented code block", () => {
+    const markdown = [
+      "Example:",
+      "",
+      "    <!-- claim: npm run lint -->",
+      "    Lint: **0 errors**",
+      "",
+      "\t<!-- claim: npm run build -->",
+      "",
+      "<!-- claim: npm test -->",
+      "Tests: **pass**",
+    ].join("\n");
+
+    expect(parseClaims(markdown)).toEqual([
+      { command: "npm test", claimText: "Tests: **pass**", line: 8 },
+    ]);
+  });
 });
